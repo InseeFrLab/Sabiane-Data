@@ -4,10 +4,10 @@ metadata:
   name: sabiane-data-api
 spec:
   ports:
-    - name: http
+    - name: sabiane-data-api
       targetPort: 8080
       port: 8080
-    - name: glowroot
+    - name: sabiane-data-glowroot
       targetPort: 4000
       port: 4000
   selector:
