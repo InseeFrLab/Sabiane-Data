@@ -9,7 +9,9 @@ metadata:
 spec:
   tls:
     - hosts:
-        - sabiane-data-api.dev.insee.io
+      - sabiane-data-api.dev.insee.io
+      - glowroot-sabiane-data-api.dev.insee.io
+
   rules:
     - host: sabiane-data-api.dev.insee.io
       http:
@@ -17,4 +19,11 @@ spec:
           - path: /
             backend:
               serviceName: sabiane-data-api
+              servicePort: http
+    - host: glowroot-sabiane-data-api.dev.insee.io
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: sabiane-data-glowroot
               servicePort: http

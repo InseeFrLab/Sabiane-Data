@@ -7,5 +7,8 @@ spec:
     - name: http
       targetPort: 8080
       port: 8080
+    - name: glowroot
+      targetPort: 4000
+      port: 4000
   selector:
     app: sabiane-data-api
