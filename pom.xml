@@ -22,7 +22,7 @@
 		<saxon.version>9.7.0-8</saxon.version>
 		<xalan.version>2.7.1</xalan.version>
 		<commons-io.version>2.7</commons-io.version>
-		<log4j2.version>2.16.0</log4j2.version>
+		<log4j2.version>2.17.0</log4j2.version>
 
 	</properties>
 
