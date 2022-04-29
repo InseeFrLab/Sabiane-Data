@@ -97,8 +97,6 @@ public class QueenApiController {
             @RequestParam(value = "plateform") Plateform plateform) throws Exception {
 
         Path folderTemp = Files.createTempDirectory("folder-");
-        LOGGER.info(folderTemp.toString());
-        LOGGER.info(folderTemp.getFileName().toString());
         File fodsInput = new File(folderTemp.toFile(), in.getOriginalFilename());
         File surveyUnitsDataZip = new File(folderTemp.toFile(), dataZip.getOriginalFilename());
         FileUtils.copyInputStreamToFile(in.getInputStream(), fodsInput);
@@ -181,8 +179,6 @@ public class QueenApiController {
             @RequestParam(value = "plateform") Plateform plateform) throws Exception {
 
         Path folderTemp = Files.createTempDirectory("folder-");
-        LOGGER.info(folderTemp.toString());
-        LOGGER.info(folderTemp.getFileName().toString());
         File fodsInput = new File(folderTemp.toFile(), in.getOriginalFilename());
         File surveyUnitsDataZip = new File(folderTemp.toFile(), dataZip.getOriginalFilename());
         FileUtils.copyInputStreamToFile(in.getInputStream(), fodsInput);

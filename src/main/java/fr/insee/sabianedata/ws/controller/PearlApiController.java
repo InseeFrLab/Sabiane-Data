@@ -41,8 +41,6 @@ public class PearlApiController {
             @RequestParam(value = "plateform") Plateform plateform) throws Exception {
 
         Path folderTemp = Files.createTempDirectory("folder-");
-        LOGGER.info(folderTemp.toString());
-        LOGGER.info(folderTemp.getFileName().toString());
         File fodsInput = new File(folderTemp.toFile(), in.getOriginalFilename());
         FileUtils.copyInputStreamToFile(in.getInputStream(), fodsInput);
 
@@ -93,8 +91,6 @@ public class PearlApiController {
             @RequestParam(value = "plateform") Plateform plateform) throws Exception {
 
         Path folderTemp = Files.createTempDirectory("folder-");
-        LOGGER.info(folderTemp.toString());
-        LOGGER.info(folderTemp.getFileName().toString());
         File fodsInput = new File(folderTemp.toFile(), in.getOriginalFilename());
         FileUtils.copyInputStreamToFile(in.getInputStream(), fodsInput);
         boolean success = false;
@@ -120,8 +116,6 @@ public class PearlApiController {
             throws Exception {
 
         Path folderTemp = Files.createTempDirectory("folder-");
-        LOGGER.info(folderTemp.toString());
-        LOGGER.info(folderTemp.getFileName().toString());
         File fodsInput = new File(folderTemp.toFile(), in.getOriginalFilename());
         FileUtils.copyInputStreamToFile(in.getInputStream(), fodsInput);
         boolean success = false;
@@ -149,8 +143,6 @@ public class PearlApiController {
             @RequestParam(value = "plateform") Plateform plateform) throws Exception {
 
         Path folderTemp = Files.createTempDirectory("folder-");
-        LOGGER.info(folderTemp.toString());
-        LOGGER.info(folderTemp.getFileName().toString());
         File fodsInput = new File(folderTemp.toFile(), in.getOriginalFilename());
         FileUtils.copyInputStreamToFile(in.getInputStream(), fodsInput);
         boolean success = false;
