@@ -12,12 +12,15 @@ public class ContactAttemptDto {
     private String status;
     @JacksonXmlProperty(localName = "Date")
     private String dateString;
+    @JacksonXmlProperty(localName = "Medium")
+    private String medium;
 
     private Long date;
 
-    public ContactAttemptDto(ContactAttemptDto ca, Long reference) {
+    public ContactAttemptDto(ContactAttemptDto ca, Long reference, String medium) {
         this.status = ca.getStatus();
         this.date = DateParser.relativeDateParse(ca.getDateString(), reference);
+        this.medium = medium;
     }
 
     public ContactAttemptDto() {
@@ -45,6 +48,14 @@ public class ContactAttemptDto {
 
     public void setDateString(String dateString) {
         this.dateString = dateString;
+    }
+
+    public String getMedium() {
+        return this.medium;
+    }
+
+    public void setMedium(String medium) {
+        this.medium = medium;
     }
 
 }

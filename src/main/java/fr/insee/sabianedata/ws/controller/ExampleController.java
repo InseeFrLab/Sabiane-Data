@@ -35,18 +35,6 @@ public class ExampleController {
 				.body(stream);
 	}
 
-	@Operation(summary="Get example for geolocations")
-	@GetMapping(value="geolocations", produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public ResponseEntity<StreamingResponseBody> geolocationsFods2Xml() throws Exception {
-
-		File geolocationsExample = Constants.EXAMPLE_GEOLOCATIONS;
-
-		StreamingResponseBody stream = out -> out.write(Files.readAllBytes(geolocationsExample.toPath())) ;
-
-		return  ResponseEntity.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"geolocationsExample.fods\"")
-				.body(stream);
-	}
 	
 	@Operation(summary="Get example for queen campaign",
 			description="Vous trouverez un fichier zip qui contient les fichiers nécessaires. \n\n"

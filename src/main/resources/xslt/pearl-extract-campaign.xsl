@@ -16,6 +16,7 @@
         <Campaign>
             <xsl:apply-templates select="//office:spreadsheet/table:table[@table:name='campaign']"/>
             <xsl:apply-templates select="//office:spreadsheet/table:table[@table:name='organisationalUnits']"/>
+            <xsl:apply-templates select="//office:spreadsheet/table:table[@table:name='referent']"/>
         </Campaign>
     </xsl:template>
     
@@ -23,6 +24,10 @@
         <xsl:variable name="row" select="tools:get-full-row(table:table-row[2])"/>
         <Campaign><xsl:value-of select="upper-case(tools:getColumn($row,1))"/></Campaign>
         <CampaignLabel><xsl:value-of select="tools:getColumn($row,2)"/></CampaignLabel>
+        <Email><xsl:value-of select="tools:getColumn($row,3)"/></Email>
+        <IdentificationConfiguration><xsl:value-of select="tools:getColumn($row,4)"/></IdentificationConfiguration>
+        <ContactOutcomeConfiguration><xsl:value-of select="tools:getColumn($row,5)"/></ContactOutcomeConfiguration>
+        <ContactAttemptConfiguration><xsl:value-of select="tools:getColumn($row,6)"/></ContactAttemptConfiguration>
     </xsl:template>
     
     <xsl:template match="office:body/office:spreadsheet/table:table[@table:name='organisationalUnits']">
@@ -42,5 +47,21 @@
                 </xsl:if>                
             </xsl:for-each>
         </Visibilities>
+    </xsl:template>
+    
+    <xsl:template match="office:body/office:spreadsheet/table:table[@table:name='referent']">
+        <Referents>
+            <xsl:for-each select="table:table-row[position()>1]">
+                <xsl:variable name="row" select="tools:get-full-row(.)"/>
+                <xsl:if test="normalize-space($row)!=''">
+                    <Referent>
+                        <FirstName><xsl:value-of select="tools:getColumn($row,1)"/></FirstName>
+                        <LastName><xsl:value-of select="tools:getColumn($row,2)"/></LastName>
+                        <Role><xsl:value-of select="tools:getColumn($row,3)"/></Role>
+                        <PhoneNumber><xsl:value-of select="tools:getColumn($row,4)"/></PhoneNumber>
+                    </Referent>
+                </xsl:if>                
+            </xsl:for-each>
+        </Referents>
     </xsl:template>
 </xsl:stylesheet>

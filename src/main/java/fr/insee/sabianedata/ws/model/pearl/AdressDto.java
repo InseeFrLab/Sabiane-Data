@@ -28,6 +28,18 @@ public class AdressDto {
     @JsonProperty(value = "l7")
     @JacksonXmlProperty(localName = "L7")
     private String L7;
+    @JacksonXmlProperty(localName = "Elevator")
+    private Boolean elevator;
+    @JacksonXmlProperty(localName = "Building")
+    private String building;
+    @JacksonXmlProperty(localName = "Floor")
+    private String floor;
+    @JacksonXmlProperty(localName = "Door")
+    private String door;
+    @JacksonXmlProperty(localName = "Staircase")
+    private String staircase;
+    @JacksonXmlProperty(localName = "CityPriorityDistrict")
+    private Boolean cityPriorityDistrict;
 
     public String getL1() {
         return L1;
@@ -83,6 +95,54 @@ public class AdressDto {
 
     public void setL7(String l7) {
         L7 = l7;
+    }
+
+    public boolean isElevator() {
+        return this.elevator;
+    }
+
+    public void setElevator(boolean elevator) {
+        this.elevator = elevator;
+    }
+
+    public String getBuilding() {
+        return this.building;
+    }
+
+    public void setBuilding(String building) {
+        this.building = building;
+    }
+
+    public String getFloor() {
+        return this.floor;
+    }
+
+    public void setFloor(String floor) {
+        this.floor = floor;
+    }
+
+    public String getDoor() {
+        return this.door;
+    }
+
+    public void setDoor(String door) {
+        this.door = door;
+    }
+
+    public String getStaircase() {
+        return this.staircase;
+    }
+
+    public void setStaircase(String staircase) {
+        this.staircase = staircase;
+    }
+
+    public boolean isCityPriorityDistrict() {
+        return this.cityPriorityDistrict;
+    }
+
+    public void setCityPriorityDistrict(boolean cityPriorityDistrict) {
+        this.cityPriorityDistrict = cityPriorityDistrict;
     }
 
     public AdressDto() {

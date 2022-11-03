@@ -1,9 +1,14 @@
 package fr.insee.sabianedata.ws.model.pearl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.annotation.XmlElement;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
@@ -12,6 +17,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 @JacksonXmlRootElement(localName = "SurveyUnit")
 public class SurveyUnitDto {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SurveyUnitDto.class);
 
     @JacksonXmlProperty(localName = "Id")
     private String id;
@@ -21,8 +27,6 @@ public class SurveyUnitDto {
     private AdressDto address;
     @JacksonXmlProperty(localName = "OrganizationUnitId")
     private String organizationUnitId;
-    @JacksonXmlProperty(localName = "GeographicalLocationId")
-    private String geographicalLocationId;
     @JacksonXmlProperty(localName = "Priority")
     private boolean priority;
     @JacksonXmlProperty(localName = "Campaign")
@@ -31,6 +35,9 @@ public class SurveyUnitDto {
     private SampleIdentifiersDto sampleIdentifiers;
     @JacksonXmlProperty(localName = "Comment")
     private String comment;
+    private List<CommentDto> comments;
+    @JacksonXmlProperty(localName = "Move")
+    private Boolean move;
     @JacksonXmlProperty(localName = "ContactOutcome")
     @XmlElement(required = false)
     private ContactOutcomeDto contactOutcome;
@@ -38,6 +45,10 @@ public class SurveyUnitDto {
     private ArrayList<ContactAttemptDto> contactAttempts = new ArrayList<>();
     @JacksonXmlProperty(localName = "States")
     private ArrayList<SurveyUnitStateDto> states = new ArrayList<>();
+    @JacksonXmlProperty(localName = "SurveyUnitIdentification")
+    @JsonProperty(value = "identification")
+    @XmlElement(required = false)
+    private Identification identification;
 
     public String getId() {
         return id;
@@ -61,14 +72,6 @@ public class SurveyUnitDto {
 
     public void setAddress(AdressDto address) {
         this.address = address;
-    }
-
-    public String getGeographicalLocationId() {
-        return geographicalLocationId;
-    }
-
-    public void setGeographicalLocationId(String geographicalLocationId) {
-        this.geographicalLocationId = geographicalLocationId;
     }
 
     public boolean isPriority() {
@@ -109,6 +112,16 @@ public class SurveyUnitDto {
 
     public void setComment(String comment) {
         this.comment = comment;
+        CommentDto interviewerComment = new CommentDto(CommentType.INTERVIEWER, comment);
+        this.comments = Arrays.asList(interviewerComment);
+    }
+
+    public List<CommentDto> getComments() {
+        return this.comments;
+    }
+
+    public void setComments(List<CommentDto> comments) {
+        this.comments = comments;
     }
 
     public ArrayList<ContactAttemptDto> getContactAttempts() {
@@ -135,22 +148,44 @@ public class SurveyUnitDto {
         this.states = states == null ? new ArrayList<>() : states;
     }
 
+    public Identification getIdentification() {
+        return this.identification;
+    }
+
+    public void setIdentification(Identification identification) {
+        this.identification = identification;
+    }
+
+    public Boolean isMove() {
+        return this.move;
+    }
+
+    public void setMove(Boolean move) {
+        this.move = move;
+    }
+
     public SurveyUnitDto() {
     }
 
     public SurveyUnitDto(SurveyUnitDto su) {
+        Identification ident = su.getIdentification();
+        LOGGER.info(su.getId() + " -> " + ident == null ? "ident is null"
+                : (ident.getIdentification() + ident.getAccess() + ident.getSituation()));
+
         this.id = su.getId();
         this.persons = su.getPersons();
         this.address = su.getAddress();
         this.organizationUnitId = su.getOrganizationUnitId();
-        this.geographicalLocationId = su.getGeographicalLocationId();
         this.priority = su.isPriority();
         this.campaign = su.getCampaign();
         this.sampleIdentifiers = su.getSampleIdentifiers();
         this.comment = su.getComment();
+        this.comments = su.getComments();
         this.contactOutcome = su.getContactOutcome();
         this.contactAttempts = su.getContactAttempts();
         this.states = su.getStates();
+        this.identification = su.getIdentification();
+        this.move = su.isMove();
     }
 
     public String toString() {

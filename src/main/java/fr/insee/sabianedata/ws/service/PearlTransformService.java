@@ -11,7 +11,8 @@ public class PearlTransformService {
 	private PearlCampaignTransformer pearlCampaignTransformer = new PearlCampaignTransformer();
 
 	public File pearlCampaginFods2Xml(File input, String fileName) throws Exception {
-		return pearlCampaignTransformer.transform(input,fileName);	}
+		return pearlCampaignTransformer.transform(input, fileName);
+	}
 
 	public File getPearlCampaign(File fodsInput) throws Exception {
 		return pearlCampaignTransformer.extractCampaign(fodsInput);
@@ -32,10 +33,5 @@ public class PearlTransformService {
 	public File getPearlAssignement(File fodsInput) throws Exception {
 		return pearlCampaignTransformer.extractAssignement(fodsInput);
 	}
-
-	public File getGeoLocations(File fodsInput) throws Exception {
-		return pearlCampaignTransformer.extractGeoLocations(fodsInput);
-	}
-
 
 }

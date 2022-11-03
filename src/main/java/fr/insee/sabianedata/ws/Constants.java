@@ -48,7 +48,6 @@ public final class Constants {
 
 
 	public static final File EXAMPLE_PEARL_CAMPAIGN = getFile("/example/pearl-campaign.fods");
-	public static final File EXAMPLE_GEOLOCATIONS = getFile("/example/geoLocations.fods");
 	public static final File EXAMPLE_QUEEN_CAMPAIGN = getFile("/example/queen-campaign.fods");
 	public static final File EXAMPLE_QUESTIONNAIRE = getFile("/example/questionnaire.xml");
 
