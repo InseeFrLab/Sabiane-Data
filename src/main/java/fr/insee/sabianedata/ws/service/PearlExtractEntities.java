@@ -16,13 +16,6 @@ public class PearlExtractEntities {
     @Autowired
     PearlTransformService pearlTransformService;
 
-    public List<GeoLocationDto> getPearlGeoLocationsFromFods(File fods) throws Exception {
-        File file = pearlTransformService.getGeoLocations(fods);
-        XmlMapper xmlMapper = new XmlMapper();
-        GeoLocations geoLocations = xmlMapper.readValue(file, GeoLocations.class);
-        return geoLocations.getGeoLocations() != null ? geoLocations.getGeoLocations() : new ArrayList<>();
-    }
-
     public List<SurveyUnitDto> getPearlSurveyUnitsFromFods(File fods) throws Exception {
         File file = pearlTransformService.getPearlSurveyUnits(fods);
         XmlMapper xmlMapper = new XmlMapper();
@@ -46,7 +39,6 @@ public class PearlExtractEntities {
 
     public CampaignDto getPearlCampaignFromFods(File fods) throws Exception {
         File file = pearlTransformService.getPearlCampaign(fods);
-        System.out.println(fods.toURI());
         XmlMapper xmlMapper = new XmlMapper();
         CampaignDto campaignDto = xmlMapper.readValue(file, CampaignDto.class);
         List<Visibility> visibilities = campaignDto.getVisibilities();

@@ -5,10 +5,8 @@ import java.nio.file.*;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,6 +84,7 @@ public class FilesCleanerUtils {
 				fileOutput.close();
 			}
 		}
+		file.close();
 
 	}
 }

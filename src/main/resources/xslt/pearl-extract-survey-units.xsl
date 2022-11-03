@@ -17,6 +17,8 @@
     <xsl:variable name="statesSheet" select="//office:spreadsheet/table:table[@table:name='states']"/>
 
     <xsl:variable name="contactAttemptsSheet" select="//office:spreadsheet/table:table[@table:name='contactAttempts']"/>
+   
+    <xsl:variable name="identificationsSheet" select="//office:spreadsheet/table:table[@table:name='identification']"/>
 
     <xsl:variable name="campaign">
         <xsl:variable name="temp" select="//office:spreadsheet/table:table[@table:name='campaign']"/>
@@ -36,6 +38,11 @@
     <xsl:function name="tools:get-contactAttempts">
         <xsl:param name="idSurveyUnit"/>
         <xsl:copy-of select="$contactAttemptsSheet/table:table-row[normalize-space(table:table-cell[1])=$idSurveyUnit]"></xsl:copy-of>
+    </xsl:function>
+    
+    <xsl:function name="tools:get-identification">
+        <xsl:param name="idSurveyUnit"/>
+        <xsl:copy-of select="$identificationsSheet/table:table-row[normalize-space(table:table-cell[1])=$idSurveyUnit]"></xsl:copy-of>
     </xsl:function>
     
     <xsl:template match="/">
@@ -58,9 +65,10 @@
                                     <Email><xsl:value-of select="tools:getColumn($personRow,5)"/></Email>
                                     <Privileged><xsl:value-of select="tools:getColumn($personRow,6)"/></Privileged>
                                     <FavoriteEmail><xsl:value-of select="tools:getColumn($personRow,7)"/></FavoriteEmail>
+                                    <BirthDate><xsl:value-of select="tools:getColumn($personRow,8)"/></BirthDate>
                                     <PhoneNumbers>
-                                        <xsl:for-each select="$personRow/table:table-cell[position()>=8 and ((position()-8) mod 3 = 0)]">
-                                            <xsl:variable name="realPosition" select="8 + (position()-1)*3"/>
+                                        <xsl:for-each select="$personRow/table:table-cell[position()>=9 and ((position()-9) mod 3 = 0)]">
+                                            <xsl:variable name="realPosition" select="9 + (position()-1)*3"/>
                                             <xsl:if test="normalize-space(.)!=''">
                                                 <PhoneNumber>
                                                     <Source><xsl:value-of select="tools:getColumn($personRow,$realPosition)"/></Source>
@@ -76,7 +84,7 @@
                         <Priority><xsl:value-of select="tools:getColumn($row,2)"/></Priority>
                         <Campaign><xsl:value-of select="$campaign"/></Campaign>
                         <OrganizationUnitId><xsl:value-of select="tools:getColumn($row,3)"/></OrganizationUnitId>
-                        <GeographicalLocationId><xsl:value-of select="tools:getColumn($row,4)"/></GeographicalLocationId>
+                        <Move><xsl:value-of select="tools:getColumn($row,4)"/></Move>
                         <Address>
                             <L1><xsl:value-of select="tools:getColumn($row,5)"/></L1>
                             <L2><xsl:value-of select="tools:getColumn($row,6)"/></L2>
@@ -85,6 +93,12 @@
                             <L5><xsl:value-of select="tools:getColumn($row,9)"/></L5>
                             <L6><xsl:value-of select="tools:getColumn($row,10)"/></L6>
                             <L7><xsl:value-of select="tools:getColumn($row,11)"/></L7>
+                            <Elevator><xsl:value-of select="tools:getColumn($row,27)"/></Elevator>
+                            <Building><xsl:value-of select="tools:getColumn($row,28)"/></Building>
+                            <Floor><xsl:value-of select="tools:getColumn($row,29)"/></Floor>
+                            <Door><xsl:value-of select="tools:getColumn($row,30)"/></Door>
+                            <Staircase><xsl:value-of select="tools:getColumn($row,31)"/></Staircase>
+                            <CityPriorityDistrict><xsl:value-of select="tools:getColumn($row,32)"/></CityPriorityDistrict>
                         </Address>
                         
                         <SampleIdentifiers>
@@ -110,6 +124,7 @@
                                     <ContactAttempt>
                                         <Value><xsl:value-of select="tools:getColumn($contactAttemptRow,2)"/></Value>
                                         <Date><xsl:value-of select="tools:getColumn($contactAttemptRow,3)"/></Date>
+                                        <Medium><xsl:value-of select="tools:getColumn($contactAttemptRow,4)"/></Medium>
                                     </ContactAttempt>
                                 </xsl:if>
                             </xsl:for-each>
@@ -132,6 +147,16 @@
                                 </xsl:if>
                             </xsl:for-each>
                         </States>
+                        <SurveyUnitIdentification>
+                            <xsl:for-each select="tools:get-identification(tools:getColumn($row,1))">
+                                <xsl:variable name="identificationRow" select="tools:get-full-row(.)"/>
+                                    <Identification><xsl:value-of select="tools:getColumn($identificationRow,2)"/></Identification>
+                                    <Access><xsl:value-of select="tools:getColumn($identificationRow,3)"/></Access>
+                                    <Situation><xsl:value-of select="tools:getColumn($identificationRow,4)"/></Situation>
+                                    <Category><xsl:value-of select="tools:getColumn($identificationRow,5)"/></Category>
+                                    <Occupant><xsl:value-of select="tools:getColumn($identificationRow,6)"/></Occupant>
+                            </xsl:for-each>
+                        </SurveyUnitIdentification>
                     </SurveyUnit>
                 </xsl:if>
             </xsl:for-each>

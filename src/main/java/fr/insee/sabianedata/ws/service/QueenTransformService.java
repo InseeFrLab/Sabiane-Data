@@ -4,20 +4,14 @@ import java.io.File;
 
 import org.springframework.stereotype.Service;
 
-import fr.insee.sabianedata.ws.service.xsl.GeoLocationsTransformer;
 import fr.insee.sabianedata.ws.service.xsl.QueenCampaignTransformer;
 import fr.insee.sabianedata.ws.service.xsl.SampleProcessingXMLTransformer;
 
 @Service
 public class QueenTransformService {
 
-	private GeoLocationsTransformer geoLocationsTransformer = new GeoLocationsTransformer();
 	private QueenCampaignTransformer queenCampaignTransformer = new QueenCampaignTransformer();
 	private SampleProcessingXMLTransformer sampleProcessingXMLTransformer = new SampleProcessingXMLTransformer();
-
-	public File geoLocationsFods2Xml(File input, String fileName) throws Exception {
-		return geoLocationsTransformer.transform(input,fileName);
-	}
 
 	public File getQueenCampaign(File fodsInput) throws Exception {
 		return queenCampaignTransformer.extractCampaign(fodsInput);
@@ -36,7 +30,7 @@ public class QueenTransformService {
 	}
 
 	public File sampleProcessing(File input, int repetitions) throws Exception {
-		return sampleProcessingXMLTransformer.transform(input,repetitions);
+		return sampleProcessingXMLTransformer.transform(input, repetitions);
 	}
 
 }

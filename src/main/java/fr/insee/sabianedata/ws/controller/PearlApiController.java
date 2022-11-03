@@ -136,30 +136,6 @@ public class PearlApiController {
         return success ? ResponseEntity.ok().body(responseModel) : ResponseEntity.badRequest().body(responseModel);
     }
 
-    @Operation(summary = "Creation des communes", description = "- **geoLocations** : le fichier .fods")
-    @PostMapping(value = "geo-locations", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseModel> createGeoLocations(HttpServletRequest request,
-            @RequestPart(value = "geoLocations") MultipartFile in,
-            @RequestParam(value = "plateform") Plateform plateform) throws Exception {
-
-        Path folderTemp = Files.createTempDirectory("folder-");
-        File fodsInput = new File(folderTemp.toFile(), in.getOriginalFilename());
-        FileUtils.copyInputStreamToFile(in.getInputStream(), fodsInput);
-        boolean success = false;
-        List<GeoLocationDto> geoLocationDtos = pearlExtractEntities.getPearlGeoLocationsFromFods(fodsInput);
-        try {
-            pearlApiService.postGeoLocationsToApi(request, geoLocationDtos, plateform);
-            success = true;
-        } catch (Exception e) {
-            LOGGER.error("Error during creation of geoLocations");
-            LOGGER.error(e.getMessage());
-        }
-
-        ResponseModel responseModel = new ResponseModel(success, String.format("Create geoLocations : %b", success));
-
-        return success ? ResponseEntity.ok().body(responseModel) : ResponseEntity.badRequest().body(responseModel);
-    }
-
     @Operation(summary = "Healthcheck, check if api is alive")
     @GetMapping(path = "/healthcheck")
     public ResponseEntity<Object> healthCheck(HttpServletRequest request,

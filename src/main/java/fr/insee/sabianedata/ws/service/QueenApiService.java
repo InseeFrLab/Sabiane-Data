@@ -98,7 +98,7 @@ public class QueenApiService {
     public ResponseEntity<String> deleteCampaign(HttpServletRequest request, Plateform plateform, String id) {
 
         // new CampaignDto with parameter id to send to pearl APi
-        final String apiUri = queenProperties.getHostFromEnum(plateform) + "/api/campaign/" + id;
+        final String apiUri = queenProperties.getHostFromEnum(plateform) + "/api/campaign/" + id + "?force=true";
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return restTemplate.exchange(apiUri, HttpMethod.DELETE, new HttpEntity<>(id, httpHeaders), String.class);

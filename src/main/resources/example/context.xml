@@ -57,7 +57,7 @@
                 <InterviewerId>INTW1</InterviewerId>
                 <InterviewerId>INTW2</InterviewerId>
             </InterviewersRef>
-            <OrganizationalUnitsRef/>
+            <OrganizationalUnitsRef />
         </OrganizationalUnit>
         <OrganizationalUnit>
             <Id>OU2</Id>
@@ -69,9 +69,9 @@
             <InterviewersRef>
                 <InterviewerId>INTW3</InterviewerId>
             </InterviewersRef>
-            <OrganizationalUnitsRef/>
+            <OrganizationalUnitsRef />
         </OrganizationalUnit>
-        
+
         <OrganizationalUnit>
             <Id>OU2</Id>
             <Label>National organizational unit 1</Label>
@@ -87,18 +87,8 @@
                 <OrganizationalUnitId>OU2</OrganizationalUnitId>
             </OrganizationalUnitsRef>
         </OrganizationalUnit>
-        
+
     </OrganizationalUnits>
-    
-    <GeographicalLocations>
-        <GeographicalLocation>
-            <Id>59350</Id>
-            <Label>Lille</Label>
-        </GeographicalLocation>
-        <GeographicalLocation>
-            <Id>75056</Id>
-            <Label>Paris</Label>
-        </GeographicalLocation>
-    </GeographicalLocations>
-    
+
+
 </Context>
