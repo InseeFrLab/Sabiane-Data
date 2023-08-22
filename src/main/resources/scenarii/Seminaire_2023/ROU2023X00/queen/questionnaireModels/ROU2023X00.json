@@ -1,0 +1,699 @@
+{
+  "cleaning": {},
+  "variables": [
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "COMMENT_QE"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "COMBIENDEB"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "COMBIENDEB_MISSING"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "QUELSARTIS1"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "QUELSARTIS2"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "QUELSARTIS3"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "QUELSARTIS4"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "QUELSARTIS_MISSING"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "UNEBOUTEIL"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "UNEBOUTEIL_MISSING"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "QUELSINTIT1"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "QUELSINTIT2"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "QUELSINTIT3"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "QUELSINTIT4"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "QUELSINTIT5"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "QUELSINTIT_MISSING"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "QUELVINEXI"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "QUELVINEXI_MISSING"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "LAMPELOMER"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "LAMPELOMER_MISSING"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "PARMICESIN"
+    },
+    {
+      "variableType": "COLLECTED",
+      "values": {
+        "COLLECTED": null,
+        "EDITED": null,
+        "INPUTED": null,
+        "FORCED": null,
+        "PREVIOUS": null
+      },
+      "name": "PARMICESIN_MISSING"
+    }
+  ],
+  "components": [
+    {
+      "componentType": "Sequence",
+      "hierarchy": {
+        "sequence": {
+          "id": "lldoabjb",
+          "page": "1",
+          "label": {
+            "type": "VTL|MD",
+            "value": "\"I - \" || \"Nous, on n’est pas moût du cerveau... \uD83E\uDDE0\""
+          }
+        }
+      },
+      "conditionFilter": { "type": "VTL", "value": "true" },
+      "id": "lldoabjb",
+      "page": "1",
+      "label": {
+        "type": "VTL|MD",
+        "value": "\"I - \" || \"Nous, on n’est pas moût du cerveau... \uD83E\uDDE0\""
+      }
+    },
+    {
+      "componentType": "InputNumber",
+      "controls": [
+        {
+          "criticality": "ERROR",
+          "errorMessage": {
+            "type": "VTL|MD",
+            "value": "\" La valeur doit être comprise entre 0 et 1000.\""
+          },
+          "typeOfControl": "FORMAT",
+          "control": {
+            "type": "VTL",
+            "value": "not(not(isnull(COMBIENDEB)) and (0>COMBIENDEB or 1000<COMBIENDEB))"
+          },
+          "id": "lldo8rg2-format-borne-inf-sup"
+        },
+        {
+          "criticality": "ERROR",
+          "errorMessage": {
+            "type": "VTL|MD",
+            "value": "\"Le nombre doit comporter au maximum 0 chiffre(s) après la virgule.\""
+          },
+          "typeOfControl": "FORMAT",
+          "control": {
+            "type": "VTL",
+            "value": "not(not(isnull(COMBIENDEB))  and round(COMBIENDEB,0)<>COMBIENDEB)"
+          },
+          "id": "lldo8rg2-format-decimal"
+        }
+      ],
+      "missingResponse": { "name": "COMBIENDEB_MISSING" },
+      "max": 1000,
+      "hierarchy": {
+        "sequence": {
+          "id": "lldoabjb",
+          "page": "1",
+          "label": {
+            "type": "VTL|MD",
+            "value": "\"I - \" || \"Nous, on n’est pas moût du cerveau... \uD83E\uDDE0\""
+          }
+        }
+      },
+      "conditionFilter": { "type": "VTL", "value": "true" },
+      "label": {
+        "type": "VTL|MD",
+        "value": "\"➡ \" || \"Combien de bouteilles de vin de Bordeaux sont vendus dans le monde \uD83C\uDF0D️ chaque seconde ?\""
+      },
+      "mandatory": false,
+      "bindingDependencies": ["COMBIENDEB_MISSING", "COMBIENDEB"],
+      "min": 0,
+      "response": { "name": "COMBIENDEB" },
+      "decimals": 0,
+      "id": "lldo8rg2",
+      "page": "2"
+    },
+    {
+      "componentType": "CheckboxGroup",
+      "bindingDependencies": [
+        "QUELSARTIS_MISSING",
+        "QUELSARTIS1",
+        "QUELSARTIS2",
+        "QUELSARTIS3",
+        "QUELSARTIS4"
+      ],
+      "missingResponse": { "name": "QUELSARTIS_MISSING" },
+      "hierarchy": {
+        "sequence": {
+          "id": "lldoabjb",
+          "page": "1",
+          "label": {
+            "type": "VTL|MD",
+            "value": "\"I - \" || \"Nous, on n’est pas moût du cerveau... \uD83E\uDDE0\""
+          }
+        }
+      },
+      "responses": [
+        {
+          "response": { "name": "QUELSARTIS1" },
+          "id": "lldolfgm-QOP-lldq5729",
+          "label": { "type": "VTL|MD", "value": "Picasso" }
+        },
+        {
+          "response": { "name": "QUELSARTIS2" },
+          "id": "lldolfgm-QOP-lldq36tr",
+          "label": {
+            "type": "VTL|MD",
+            "value": "le Prince Charles d’Angleterre \uD83D\uDC42️\uD83D\uDC42️"
+          }
+        },
+        {
+          "response": { "name": "QUELSARTIS3" },
+          "id": "lldolfgm-QOP-lldprlk1",
+          "label": { "type": "VTL|MD", "value": "Dali" }
+        },
+        {
+          "response": { "name": "QUELSARTIS4" },
+          "id": "lldolfgm-QOP-lldpql4e",
+          "label": { "type": "VTL|MD", "value": "Modigliani" }
+        }
+      ],
+      "conditionFilter": { "type": "VTL", "value": "true" },
+      "id": "lldolfgm",
+      "page": "3",
+      "label": {
+        "type": "VTL|MD",
+        "value": "\"➡ \" || \"Quel artiste n’a pas dessiné des étiquettes pour Mouton Rothschild \uD83D\uDC11 ?\""
+      }
+    },
+    {
+      "componentType": "InputNumber",
+      "controls": [
+        {
+          "criticality": "ERROR",
+          "errorMessage": {
+            "type": "VTL|MD",
+            "value": "\" La valeur doit être comprise entre 1900 et 2000.\""
+          },
+          "typeOfControl": "FORMAT",
+          "control": {
+            "type": "VTL",
+            "value": "not(not(isnull(UNEBOUTEIL)) and (1900>UNEBOUTEIL or 2000<UNEBOUTEIL))"
+          },
+          "id": "lldod6dv-format-borne-inf-sup"
+        },
+        {
+          "criticality": "ERROR",
+          "errorMessage": {
+            "type": "VTL|MD",
+            "value": "\"Le nombre doit comporter au maximum 0 chiffre(s) après la virgule.\""
+          },
+          "typeOfControl": "FORMAT",
+          "control": {
+            "type": "VTL",
+            "value": "not(not(isnull(UNEBOUTEIL))  and round(UNEBOUTEIL,0)<>UNEBOUTEIL)"
+          },
+          "id": "lldod6dv-format-decimal"
+        }
+      ],
+      "missingResponse": { "name": "UNEBOUTEIL_MISSING" },
+      "max": 2000,
+      "hierarchy": {
+        "sequence": {
+          "id": "lldoabjb",
+          "page": "1",
+          "label": {
+            "type": "VTL|MD",
+            "value": "\"I - \" || \"Nous, on n’est pas moût du cerveau... \uD83E\uDDE0\""
+          }
+        }
+      },
+      "conditionFilter": { "type": "VTL", "value": "true" },
+      "label": {
+        "type": "VTL|MD",
+        "value": "\"➡ \" || \"En quelle année une bouteille de Lynch-Bages a fait le tour de la Terre à bord de la navette spatiale \uD83D\uDE80 Discovery ?\""
+      },
+      "mandatory": false,
+      "bindingDependencies": ["UNEBOUTEIL_MISSING", "UNEBOUTEIL"],
+      "min": 1900,
+      "response": { "name": "UNEBOUTEIL" },
+      "decimals": 0,
+      "id": "lldod6dv",
+      "page": "4"
+    },
+    {
+      "componentType": "Sequence",
+      "hierarchy": {
+        "sequence": {
+          "id": "lldnefv8",
+          "page": "5",
+          "label": {
+            "type": "VTL|MD",
+            "value": "\"II - \" || \"Nom d’un vin ! \uD83C\uDF77\""
+          }
+        }
+      },
+      "conditionFilter": { "type": "VTL", "value": "true" },
+      "id": "lldnefv8",
+      "page": "5",
+      "label": {
+        "type": "VTL|MD",
+        "value": "\"II - \" || \"Nom d’un vin ! \uD83C\uDF77\""
+      }
+    },
+    {
+      "componentType": "CheckboxGroup",
+      "bindingDependencies": [
+        "QUELSINTIT_MISSING",
+        "QUELSINTIT1",
+        "QUELSINTIT2",
+        "QUELSINTIT3",
+        "QUELSINTIT4",
+        "QUELSINTIT5"
+      ],
+      "missingResponse": { "name": "QUELSINTIT_MISSING" },
+      "hierarchy": {
+        "sequence": {
+          "id": "lldnefv8",
+          "page": "5",
+          "label": {
+            "type": "VTL|MD",
+            "value": "\"II - \" || \"Nom d’un vin ! \uD83C\uDF77\""
+          }
+        }
+      },
+      "responses": [
+        {
+          "response": { "name": "QUELSINTIT1" },
+          "id": "lldo9pw9-QOP-lldpv8h7",
+          "label": {
+            "type": "VTL|MD",
+            "value": "Les Blancs de la Mer \uD83E\uDD88"
+          }
+        },
+        {
+          "response": { "name": "QUELSINTIT2" },
+          "id": "lldo9pw9-QOP-lldqaamc",
+          "label": {
+            "type": "VTL|MD",
+            "value": "Un Indien Dans les Vignes \uD83E\uDEB6"
+          }
+        },
+        {
+          "response": { "name": "QUELSINTIT3" },
+          "id": "lldo9pw9-QOP-lldq0lbh",
+          "label": {
+            "type": "VTL|MD",
+            "value": "Vin milieu sous les mers \uD83D\uDC19"
+          }
+        },
+        {
+          "response": { "name": "QUELSINTIT4" },
+          "id": "lldo9pw9-QOP-lldq69ao",
+          "label": { "type": "VTL|MD", "value": "Ti-Tannique \uD83D\uDEF6" }
+        },
+        {
+          "response": { "name": "QUELSINTIT5" },
+          "id": "lldo9pw9-QOP-lldprhiu",
+          "label": { "type": "VTL|MD", "value": "Raisin et sentiments ❤️" }
+        }
+      ],
+      "conditionFilter": { "type": "VTL", "value": "true" },
+      "id": "lldo9pw9",
+      "page": "6",
+      "label": {
+        "type": "VTL|MD",
+        "value": "\"➡ \" || \"Quels intitulés sont des vins de bordeaux ?\""
+      }
+    },
+    {
+      "componentType": "Radio",
+      "bindingDependencies": ["QUELVINEXI_MISSING", "QUELVINEXI"],
+      "missingResponse": { "name": "QUELVINEXI_MISSING" },
+      "response": { "name": "QUELVINEXI" },
+      "hierarchy": {
+        "sequence": {
+          "id": "lldnefv8",
+          "page": "5",
+          "label": {
+            "type": "VTL|MD",
+            "value": "\"II - \" || \"Nom d’un vin ! \uD83C\uDF77\""
+          }
+        }
+      },
+      "options": [
+        { "label": { "type": "VTL|MD", "value": "JavaScript" }, "value": "2" },
+        { "label": { "type": "VTL|MD", "value": "Java" }, "value": "1" },
+        { "label": { "type": "VTL|MD", "value": "Pearl" }, "value": "3" },
+        { "label": { "type": "VTL|MD", "value": "Python" }, "value": "4" }
+      ],
+      "conditionFilter": { "type": "VTL", "value": "true" },
+      "id": "lldocta8",
+      "page": "7",
+      "label": {
+        "type": "VTL|MD",
+        "value": "\"➡ \" || \"\uD83E\uDD13 Quel vin existe ? \""
+      },
+      "mandatory": false
+    },
+    {
+      "componentType": "Input",
+      "bindingDependencies": ["LAMPELOMER_MISSING", "LAMPELOMER"],
+      "missingResponse": { "name": "LAMPELOMER_MISSING" },
+      "response": { "name": "LAMPELOMER" },
+      "hierarchy": {
+        "sequence": {
+          "id": "lldnefv8",
+          "page": "5",
+          "label": {
+            "type": "VTL|MD",
+            "value": "\"II - \" || \"Nom d’un vin ! \uD83C\uDF77\""
+          }
+        }
+      },
+      "conditionFilter": { "type": "VTL", "value": "true" },
+      "id": "lldo0g2z",
+      "page": "8",
+      "label": {
+        "type": "VTL|MD",
+        "value": "\"➡ \" || \"L’Ampelomeryx est un intitulé de vin. Qu’est-ce à l’origine ? \uD83E\uDD14\""
+      },
+      "mandatory": false,
+      "maxLength": 249
+    },
+    {
+      "componentType": "Radio",
+      "bindingDependencies": ["PARMICESIN_MISSING", "PARMICESIN"],
+      "missingResponse": { "name": "PARMICESIN_MISSING" },
+      "response": { "name": "PARMICESIN" },
+      "hierarchy": {
+        "sequence": {
+          "id": "lldnefv8",
+          "page": "5",
+          "label": {
+            "type": "VTL|MD",
+            "value": "\"II - \" || \"Nom d’un vin ! \uD83C\uDF77\""
+          }
+        }
+      },
+      "options": [
+        {
+          "label": { "type": "VTL|MD", "value": "Le Désir ❤️‍\uD83D\uDD25" },
+          "value": "1"
+        },
+        {
+          "label": { "type": "VTL|MD", "value": "La Levrette \uD83C\uDF36️" },
+          "value": "3"
+        },
+        {
+          "label": {
+            "type": "VTL|MD",
+            "value": "La Bistouquette \uD83E\uDD52"
+          },
+          "value": "2"
+        },
+        {
+          "label": { "type": "VTL|MD", "value": "La débAuche \uD83D\uDC16" },
+          "value": "4"
+        }
+      ],
+      "conditionFilter": { "type": "VTL", "value": "true" },
+      "id": "lldo0zg6",
+      "page": "9",
+      "label": {
+        "type": "VTL|MD",
+        "value": "\"➡ \" || \"Parmi ces intitulés, lequel n’est pas le nom d’un vin de bordeaux ?\""
+      },
+      "mandatory": false
+    },
+    {
+      "componentType": "Sequence",
+      "hierarchy": {
+        "sequence": {
+          "id": "COMMENT-SEQ",
+          "page": "10",
+          "label": { "type": "VTL|MD", "value": "\"Commentaire\"" }
+        }
+      },
+      "conditionFilter": { "type": "VTL", "value": "true" },
+      "id": "COMMENT-SEQ",
+      "page": "10",
+      "label": { "type": "VTL|MD", "value": "\"Commentaire\"" }
+    },
+    {
+      "componentType": "Textarea",
+      "bindingDependencies": ["COMMENT_QE"],
+      "response": { "name": "COMMENT_QE" },
+      "hierarchy": {
+        "sequence": {
+          "id": "COMMENT-SEQ",
+          "page": "10",
+          "label": { "type": "VTL|MD", "value": "\"Commentaire\"" }
+        }
+      },
+      "conditionFilter": { "type": "VTL", "value": "true" },
+      "id": "COMMENT-QUESTION",
+      "page": "11",
+      "label": {
+        "type": "VTL|MD",
+        "value": "\"Avez-vous des remarques concernant l'enquête ou des commentaires ?\""
+      },
+      "mandatory": false,
+      "maxLength": 2000
+    }
+  ],
+  "pagination": "question",
+  "resizing": {},
+  "missingBlock": {
+    "PARMICESIN_MISSING": ["PARMICESIN"],
+    "LAMPELOMER": ["LAMPELOMER_MISSING"],
+    "UNEBOUTEIL_MISSING": ["UNEBOUTEIL"],
+    "QUELSARTIS2": ["QUELSARTIS_MISSING"],
+    "QUELSARTIS1": ["QUELSARTIS_MISSING"],
+    "QUELSARTIS4": ["QUELSARTIS_MISSING"],
+    "LAMPELOMER_MISSING": ["LAMPELOMER"],
+    "QUELSINTIT_MISSING": [
+      "QUELSINTIT1",
+      "QUELSINTIT2",
+      "QUELSINTIT3",
+      "QUELSINTIT4",
+      "QUELSINTIT5"
+    ],
+    "QUELSARTIS3": ["QUELSARTIS_MISSING"],
+    "QUELVINEXI": ["QUELVINEXI_MISSING"],
+    "QUELSINTIT1": ["QUELSINTIT_MISSING"],
+    "PARMICESIN": ["PARMICESIN_MISSING"],
+    "QUELVINEXI_MISSING": ["QUELVINEXI"],
+    "QUELSINTIT5": ["QUELSINTIT_MISSING"],
+    "QUELSINTIT4": ["QUELSINTIT_MISSING"],
+    "QUELSARTIS_MISSING": [
+      "QUELSARTIS1",
+      "QUELSARTIS2",
+      "QUELSARTIS3",
+      "QUELSARTIS4"
+    ],
+    "QUELSINTIT3": ["QUELSINTIT_MISSING"],
+    "QUELSINTIT2": ["QUELSINTIT_MISSING"],
+    "COMBIENDEB_MISSING": ["COMBIENDEB"],
+    "UNEBOUTEIL": ["UNEBOUTEIL_MISSING"],
+    "COMBIENDEB": ["COMBIENDEB_MISSING"]
+  },
+  "label": {
+    "type": "VTL|MD",
+    "value": "Quizz vignobles bordelais \uD83C\uDF77\uD83C\uDF47"
+  },
+  "lunaticModelVersion": "2.3.2",
+  "modele": "QUIZZVIGNO",
+  "enoCoreVersion": "2.4.3",
+  "generatingDate": "22-08-2023 13:54:01",
+  "missing": true,
+  "id": "lldnijv4",
+  "maxPage": "11"
+}
