@@ -18,8 +18,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.servlet.http.HttpServletRequest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.client.RestClientException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import fr.insee.sabianedata.ws.config.Plateform;
 import fr.insee.sabianedata.ws.model.ResponseModel;
 import fr.insee.sabianedata.ws.model.massiveAttack.OrganisationUnitDto;
@@ -39,7 +39,6 @@ import fr.insee.sabianedata.ws.model.massiveAttack.ScenarioType;
 import fr.insee.sabianedata.ws.model.massiveAttack.TrainingCourse;
 import fr.insee.sabianedata.ws.model.massiveAttack.TrainingScenario;
 import fr.insee.sabianedata.ws.model.pearl.Assignement;
-import fr.insee.sabianedata.ws.model.pearl.Campaign;
 import fr.insee.sabianedata.ws.model.pearl.ContactAttemptDto;
 import fr.insee.sabianedata.ws.model.pearl.ContactOutcomeDto;
 import fr.insee.sabianedata.ws.model.pearl.Identification;
@@ -582,17 +581,35 @@ public class MassiveAttackService {
         }
 
         public ResponseEntity<String> deleteCampaign(HttpServletRequest request, Plateform plateform, String id) {
-                List<Campaign> pearlCampaigns = pearlApiService.getCampaigns(request, plateform, true);
-                if (pearlCampaigns.stream().filter(camp -> camp.getId().equals(id)).count() == 0) {
+                HttpStatus pearlRequestStatus = pearlApiService.deleteCampaign(request, plateform, id).getStatusCode();
+                HttpStatus queenRequestStatus = queenApiService.deleteCampaign(request, plateform, id).getStatusCode();
+                HttpStatus NOT_FOUND = HttpStatus.NOT_FOUND;
+
+                // handle 404 from both API
+                if (pearlRequestStatus.equals(NOT_FOUND) && queenRequestStatus.equals(NOT_FOUND)) {
                         LOGGER.error("DELETE campaign with id {} resulting in 404 because it does not exists", id);
-                        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                        return new ResponseEntity<>(NOT_FOUND);
                 }
-                ResponseEntity<String> pearlResponse = pearlApiService.deleteCampaign(request, plateform, id);
-                ResponseEntity<String> queenResponse = queenApiService.deleteCampaign(request, plateform, id);
-                LOGGER.info("DELETE campaign with id {} : pearl={} / queen={}", id,
-                                pearlResponse.getStatusCode().toString(), queenResponse.getStatusCode().toString());
+
+                // handle other unsuccessful API responses
+                if (isUnsuccessful(pearlRequestStatus) || isUnsuccessful(queenRequestStatus)) {
+                        LOGGER.error("DELETE campaign with id {} went wrong.", id);
+                        LOGGER.error("Pearl={} / Queen={}", id,
+                                        pearlRequestStatus.toString(), queenRequestStatus.toString());
+                        String appsInError = (isUnsuccessful(pearlRequestStatus) ? "pearl" : "")
+                                        + (isUnsuccessful(queenRequestStatus) ? "queen" : "");
+                        String message = String.format("Something went wrong captain! hint : /s", appsInError);
+                        return new ResponseEntity<String>(message,
+                                        HttpStatus.INTERNAL_SERVER_ERROR);
+
+                }
+                LOGGER.info("DELETE campaign with id {} is successful", id);
                 return ResponseEntity.ok().build();
 
+        }
+
+        private boolean isUnsuccessful(HttpStatus status) {
+                return !status.is2xxSuccessful() && !status.equals(HttpStatus.NOT_FOUND);
         }
 
 }
