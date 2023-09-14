@@ -168,10 +168,6 @@ public class SurveyUnitDto {
     }
 
     public SurveyUnitDto(SurveyUnitDto su) {
-        Identification ident = su.getIdentification();
-        LOGGER.info(su.getId() + " -> " + ident == null ? "ident is null"
-                : (ident.getIdentification() + ident.getAccess() + ident.getSituation()));
-
         this.id = su.getId();
         this.persons = su.getPersons();
         this.address = su.getAddress();
