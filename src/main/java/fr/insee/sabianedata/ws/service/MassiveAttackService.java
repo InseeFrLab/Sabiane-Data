@@ -42,7 +42,6 @@ import fr.insee.sabianedata.ws.model.pearl.Assignement;
 import fr.insee.sabianedata.ws.model.pearl.Campaign;
 import fr.insee.sabianedata.ws.model.pearl.ContactAttemptDto;
 import fr.insee.sabianedata.ws.model.pearl.ContactOutcomeDto;
-import fr.insee.sabianedata.ws.model.pearl.Identification;
 import fr.insee.sabianedata.ws.model.pearl.InterviewerDto;
 import fr.insee.sabianedata.ws.model.pearl.SurveyUnitStateDto;
 import fr.insee.sabianedata.ws.model.pearl.UserDto;
