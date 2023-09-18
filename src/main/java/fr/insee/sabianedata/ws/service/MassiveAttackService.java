@@ -146,7 +146,7 @@ public class MassiveAttackService {
                 List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> pearlSurveyUnits = pearlExtractEntities
                                 .getPearlSurveyUnitsFromFods(pearlFodsInput);
                 List<Assignement> assignements = pearlExtractEntities.getAssignementsFromFods(pearlFodsInput);
-                                
+
                 // 4 : make campaignId uniq => {campaign.id}_{I/M}_{OU}_{date}_{scenarLabel} 
                 String newCampaignId = String.join("_", pearlCampaign.getCampaign(), type.toString().substring(0, 1),
                                 organisationUnitId, referenceDate.toString(), scenarLabel);
@@ -176,7 +176,6 @@ public class MassiveAttackService {
 
                 // map oldQuestId to new questModels
                 HashMap<String, String> questionnaireIdMapping = new HashMap<>();
-                //TODO vérifier comment est supprimer modèle quest & normenclatures queen
                 List<QuestionnaireModelDto> newQuestionnaireModels = questionnaireModels.stream().map(qm -> {
                         String newQuestionnaireModelId = String.join("_", qm.getIdQuestionnaireModel(),
                                         organisationUnitId, referenceDate.toString());
@@ -378,7 +377,6 @@ public class MassiveAttackService {
                 }
                 LOGGER.info("Trying to post " + tc.getPearlSurveyUnits().size() + " pearl surveyUnits");
                 tc.getPearlSurveyUnits().stream().parallel().forEach(su -> {
-                        LOGGER.info(String.join("-", su.getId(),su.getOrganizationUnitId(),su.getCampaign()));
                 });
                 try {
                         pearlApiService.postUesToApi(request, tc.getPearlSurveyUnits(), plateform);
