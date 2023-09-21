@@ -1,33 +1,27 @@
 package fr.insee.sabianedata.ws.controller;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import fr.insee.sabianedata.ws.config.Plateform;
+import fr.insee.sabianedata.ws.model.ResponseModel;
+import fr.insee.sabianedata.ws.model.massiveAttack.OrganisationUnitDto;
+import fr.insee.sabianedata.ws.model.massiveAttack.TrainingScenario;
+import fr.insee.sabianedata.ws.model.pearl.Campaign;
+import fr.insee.sabianedata.ws.model.pearl.CampaignId;
+import fr.insee.sabianedata.ws.service.MassiveAttackService;
+import fr.insee.sabianedata.ws.service.PearlApiService;
+import fr.insee.sabianedata.ws.service.UtilsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import fr.insee.sabianedata.ws.config.Plateform;
-import fr.insee.sabianedata.ws.model.ResponseModel;
-import fr.insee.sabianedata.ws.model.massiveAttack.OrganisationUnitDto;
-import fr.insee.sabianedata.ws.model.massiveAttack.TrainingScenario;
-import fr.insee.sabianedata.ws.model.pearl.Campaign;
-import fr.insee.sabianedata.ws.service.MassiveAttackService;
-import fr.insee.sabianedata.ws.service.PearlApiService;
-import fr.insee.sabianedata.ws.service.UtilsService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Massive Attack : Post data to Pearl and Queen APIs")
 @RestController
@@ -61,12 +55,12 @@ public class MassiveAttackController {
     @Operation(summary = "Create a training course")
     @PostMapping(value = "training-course", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseModel> generateTrainingCourse(HttpServletRequest request,
-            @RequestParam(value = "campaignId") String campaignId,
-            @RequestParam(value = "campaignLabel") String campaignLabel,
-            @RequestParam(value = "organisationUnitId") String organisationUnitId,
-            @RequestParam(value = "dateReference") Long dateReference,
-            @RequestParam(value = "interviewers", defaultValue = "") List<String> interviewers,
-            @RequestParam(value = "plateform") Plateform plateform) {
+                                                                @RequestParam(value = "campaignId") String campaignId,
+                                                                @RequestParam(value = "campaignLabel") String campaignLabel,
+                                                                @RequestParam(value = "organisationUnitId") String organisationUnitId,
+                                                                @RequestParam(value = "dateReference") Long dateReference,
+                                                                @RequestParam(value = "interviewers", defaultValue = "") List<String> interviewers,
+                                                                @RequestParam(value = "plateform") Plateform plateform) {
         LOGGER.info("USER : " + utilsService.getRequesterId(request) + " | create scenario " + campaignId + " -> "
                 + campaignLabel);
         ResponseModel result = massiveAttackService.generateTrainingScenario(campaignId, campaignLabel,
@@ -78,7 +72,7 @@ public class MassiveAttackController {
     @Operation(summary = "Return user OrganisationalUnit")
     @GetMapping(value = "user/organisationUnit", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrganisationUnitDto> getUserOrganisationalUnit(HttpServletRequest request,
-            @RequestParam(value = "plateform") Plateform plateform) {
+                                                                         @RequestParam(value = "plateform") Plateform plateform) {
         LOGGER.info("USER : " + utilsService.getRequesterId(request) + " | get organization unit ");
         OrganisationUnitDto ou = pearlApiService.getUserOrganizationUnit(request, plateform);
         if (ou == null) {
@@ -91,7 +85,7 @@ public class MassiveAttackController {
     @Operation(summary = "Delete a campaign")
     @DeleteMapping(path = "campaign/{id}")
     public ResponseEntity<String> deleteCampaignById(HttpServletRequest request,
-            @PathVariable(value = "id") String campaignId, @RequestParam(value = "plateform") Plateform plateform) {
+                                                     @PathVariable(value = "id") String campaignId, @RequestParam(value = "plateform") Plateform plateform) {
         LOGGER.warn("USER : " + utilsService.getRequesterId(request) + " | delete campaign " + campaignId);
         return massiveAttackService.deleteCampaign(request, plateform, campaignId);
     }
@@ -99,18 +93,36 @@ public class MassiveAttackController {
     @Operation(summary = "Get list of training courses")
     @GetMapping(path = "/training-courses")
     public ResponseEntity<List<Campaign>> getTrainingSessions(HttpServletRequest request,
-            @RequestParam(value = "plateform") Plateform plateform,
-            @RequestParam(value = "admin", defaultValue = "false") boolean admin) {
+                                                              @RequestParam(value = "plateform") Plateform plateform,
+                                                              @RequestParam(value = "admin", defaultValue = "false") boolean admin) {
         List<Campaign> pearlCampaigns = pearlApiService.getCampaigns(request, plateform, admin);
 
         LOGGER.info("USER : " + utilsService.getRequesterId(request) + " | get campaigns ");
         return new ResponseEntity<>(pearlCampaigns, HttpStatus.OK);
     }
 
+    @Operation(summary = "Get a training course by ID")
+    @GetMapping(path = "/training-courses/{id}")
+    public ResponseEntity<CampaignId> getTrainingCourseById(
+            HttpServletRequest request,
+            @PathVariable("id") String id,
+            @RequestParam(value = "plateform") Plateform plateform,
+            @RequestParam(value = "admin", defaultValue = "false") boolean admin) {
+        Optional<CampaignId> campaign = pearlApiService.getCampaignById(request, id, plateform);
+
+        if (!campaign.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        LOGGER.info("USER : " + utilsService.getRequesterId(request) + " | get campaign by ID: " + id);
+        return new ResponseEntity<>(campaign.get(), HttpStatus.OK);
+    }
+
+
     @Operation(summary = "Return all OrganisationalUnits")
     @GetMapping(value = "organisation-units", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<OrganisationUnitDto>> getAllOrganisationalUnits(HttpServletRequest request,
-            @RequestParam(value = "plateform") Plateform plateform) {
+                                                                               @RequestParam(value = "plateform") Plateform plateform) {
         LOGGER.info("USER : " + utilsService.getRequesterId(request) + " | get organization unit ");
         List<OrganisationUnitDto> ous = pearlApiService.getAllOrganizationUnits(request, plateform);
         if (ous.isEmpty()) {
