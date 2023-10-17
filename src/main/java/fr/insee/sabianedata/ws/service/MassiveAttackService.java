@@ -514,7 +514,7 @@ public class MassiveAttackService {
                 validInterviewer.setFirstName("FirstName");
                 validInterviewer.setLastName("LastName");
                 validInterviewer.setEmail("firstname.lastname@valid.net");
-                validInterviewer.setPhoneNumer("+33000000000");
+                validInterviewer.setPhoneNumber("+33000000000");
                 return interviewers.stream().map(inter -> {
                         validInterviewer.setId(inter);
                         try {
