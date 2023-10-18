@@ -99,8 +99,8 @@ public class MassiveAttackService {
 
                 Stream<File> folders = Arrays.stream(tempScenariiFolder.listFiles());
                 List<TrainingScenario> listScenarii = folders
-                                .map(f -> trainingScenarioService.getTrainingScenario(tempScenariiFolder, f.getName()))
-                                .collect(Collectors.toList());
+                        .map(f -> trainingScenarioService.getTrainingScenario(tempScenariiFolder, f.getName()))
+                        .collect(Collectors.toList());
                 listScenarii.forEach(scenar -> scenarii.put(scenar.getLabel(), scenar));
                 LOGGER.debug("Init loading finished : {} loaded scenarii", scenarii.size());
 
@@ -118,13 +118,13 @@ public class MassiveAttackService {
         }
 
         private TrainingCourse prepareTrainingCourse(String campaign, String scenario, String campaignLabel,
-                        String organisationUnitId,
-                        HttpServletRequest request, Long referenceDate, Plateform plateform, List<String> interviewers,
-                        ScenarioType type, TrainingScenario scenar, String scenarLabel) throws Exception {
+                                                     String organisationUnitId,
+                                                     HttpServletRequest request, Long referenceDate, Plateform plateform, List<String> interviewers,
+                                                     ScenarioType type, TrainingScenario scenar, String scenarLabel) throws Exception {
 
                 // 1 : dossier de traitement 'folder-'
                 File currentCampaignFolder = new File(tempScenariiFolder,
-                                scenario + File.separator + campaign.toUpperCase());
+                        scenario + File.separator + campaign.toUpperCase());
                 File queenFolder = new File(currentCampaignFolder, "queen");
                 File pearlFolder = new File(currentCampaignFolder, "pearl");
 
@@ -132,24 +132,24 @@ public class MassiveAttackService {
                 File queenFodsInput = new File(queenFolder, "queen_campaign.fods");
                 CampaignDto queenCampaign = queenExtractEntities.getQueenCampaignFromFods(queenFodsInput);
                 List<QuestionnaireModelDto> questionnaireModels = queenExtractEntities
-                                .getQueenQuestionnaireModelsDtoFromFods(queenFodsInput, queenFolder.toString());
+                        .getQueenQuestionnaireModelsDtoFromFods(queenFodsInput, queenFolder.toString());
                 List<NomenclatureDto> nomenclatures = queenExtractEntities
-                                .getQueenNomenclaturesDtoFromFods(queenFodsInput, queenFolder.toString());
+                        .getQueenNomenclaturesDtoFromFods(queenFodsInput, queenFolder.toString());
                 List<SurveyUnitDto> queenSurveyUnits = queenExtractEntities.getQueenSurveyUnitsFromFods(queenFodsInput,
-                                queenFolder.toString());
+                        queenFolder.toString());
 
                 // 3 : extract Pearl
                 File pearlFodsInput = new File(pearlFolder, "pearl_campaign.fods");
 
                 fr.insee.sabianedata.ws.model.pearl.CampaignDto pearlCampaign = pearlExtractEntities
-                                .getPearlCampaignFromFods(pearlFodsInput);
+                        .getPearlCampaignFromFods(pearlFodsInput);
                 List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> pearlSurveyUnits = pearlExtractEntities
-                                .getPearlSurveyUnitsFromFods(pearlFodsInput);
+                        .getPearlSurveyUnitsFromFods(pearlFodsInput);
                 List<Assignement> assignements = pearlExtractEntities.getAssignementsFromFods(pearlFodsInput);
 
                 // 4 : make campaignId uniq => {campaign.id}_{I/M}_{OU}_{date}_{scenarLabel} 
                 String newCampaignId = String.join("_", pearlCampaign.getCampaign(), type.toString().substring(0, 1),
-                                organisationUnitId, referenceDate.toString(), scenarLabel);
+                        organisationUnitId, referenceDate.toString(), scenarLabel);
 
                 pearlCampaign.setCampaign(newCampaignId);
                 pearlCampaign.setCampaignLabel(campaignLabel);
@@ -157,20 +157,20 @@ public class MassiveAttackService {
                 // 5 : change visibility with user OU only and
 
                 ArrayList<Visibility> visibilities = updatingVisibilities(referenceDate, organisationUnitId,
-                                pearlCampaign.getVisibilities());
+                        pearlCampaign.getVisibilities());
 
                 pearlCampaign.setVisibilities(visibilities);
 
                 // 6 : generate pearl survey-units for interviewers
 
                 List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> distributedPearlSurveyUnits = generatePearlSurveyUnits(
-                                campaign, pearlCampaign, referenceDate, organisationUnitId, pearlSurveyUnits,
-                                interviewers,
-                                assignements, type);
+                        campaign, pearlCampaign, referenceDate, organisationUnitId, pearlSurveyUnits,
+                        interviewers,
+                        assignements, type);
 
                 // 7 Queen : make uniq campaignId and questionnaireId
                 String newQueenCampaignId = String.join("_", queenCampaign.getId(), type.toString().substring(0, 1),
-                                organisationUnitId, referenceDate.toString(), scenarLabel);
+                        organisationUnitId, referenceDate.toString(), scenarLabel);
                 queenCampaign.setId(newQueenCampaignId);
                 queenCampaign.setLabel(campaignLabel);
 
@@ -178,7 +178,7 @@ public class MassiveAttackService {
                 HashMap<String, String> questionnaireIdMapping = new HashMap<>();
                 List<QuestionnaireModelDto> newQuestionnaireModels = questionnaireModels.stream().map(qm -> {
                         String newQuestionnaireModelId = String.join("_", qm.getIdQuestionnaireModel(),
-                                        organisationUnitId, referenceDate.toString());
+                                organisationUnitId, referenceDate.toString());
                         questionnaireIdMapping.put(qm.getIdQuestionnaireModel(), newQuestionnaireModelId);
                         qm.setIdQuestionnaireModel(newQuestionnaireModelId);
                         qm.setCampaignId(newQueenCampaignId);
@@ -186,14 +186,14 @@ public class MassiveAttackService {
                 }).collect(Collectors.toList());
 
                 List<String> newQuestionnaireIds = newQuestionnaireModels.stream()
-                                .map(quest -> quest.getIdQuestionnaireModel()).collect(Collectors.toList());
+                        .map(quest -> quest.getIdQuestionnaireModel()).collect(Collectors.toList());
 
                 queenCampaign.setQuestionnaireIds((ArrayList<String>) newQuestionnaireIds);
 
                 // 8 queen : generate queen survey_units
 
                 List<SurveyUnitDto> distributedQueenSurveyUnits = generateQueenSurveyUnits(campaign, referenceDate,
-                                queenSurveyUnits, interviewers, assignements, type, questionnaireIdMapping);
+                        queenSurveyUnits, interviewers, assignements, type, questionnaireIdMapping);
 
                 // lambda can't update pearl and queen distributedSU while updating assignements
                 // AKA 'local variable in enclosing scope must be final or effectively final'
@@ -221,15 +221,15 @@ public class MassiveAttackService {
                 }).collect(Collectors.toList());
 
                 TrainingCourse trainingCourse = new TrainingCourse(distributedPearlSurveyUnits,
-                                distributedQueenSurveyUnits, pearlCampaign, queenCampaign, newQuestionnaireModels,
-                                nomenclatures, assignements);
+                        distributedQueenSurveyUnits, pearlCampaign, queenCampaign, newQuestionnaireModels,
+                        nomenclatures, assignements);
 
                 return trainingCourse;
         }
 
         private List<Assignement> generateDistributedAssignements(
-                        List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> distributedPearlSurveyUnits,
-                        HashMap<String, String> anonymizedIds) {
+                List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> distributedPearlSurveyUnits,
+                HashMap<String, String> anonymizedIds) {
 
                 return distributedPearlSurveyUnits.stream().map(su -> {
                         String interviewer = su.getId().split("_")[2];
@@ -240,70 +240,68 @@ public class MassiveAttackService {
 
         }
 
-        private List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> generatePearlSurveyUnits(
-                String campaign, fr.insee.sabianedata.ws.model.pearl.CampaignDto pearlCampaign,
-                Long referenceDate, String organisationUnitId,
-                List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> pearlSurveyUnits,
-                List<String> interviewers, List<Assignement> assignements, ScenarioType type,
-                HttpServletRequest request, Plateform plateform) {
+        private List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> generatePearlSurveyUnits(String campaign,
+                                                                                                 fr.insee.sabianedata.ws.model.pearl.CampaignDto pearlCampaign, Long referenceDate,
+                                                                                                 String organisationUnitId,
+                                                                                                 List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> pearlSurveyUnits,
+                                                                                                 List<String> interviewers, List<Assignement> assignements, ScenarioType type) {
 
                 List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> newSurveyUnits = new ArrayList<>();
 
                 if (type.equals(ScenarioType.INTERVIEWER)) {
-                        newSurveyUnits = interviewers.stream()
-                                .flatMap(in -> pearlSurveyUnits.stream()
-                                        .map(su -> updatePearlSurveyUnit(su, in, pearlCampaign, campaign, organisationUnitId, referenceDate)))
-                                .collect(Collectors.toList());
-                }
+                        newSurveyUnits = interviewers.stream().map(in -> pearlSurveyUnits.stream().map(su -> {
 
+                                        return updatePearlSurveyUnit(su, in, pearlCampaign, campaign, organisationUnitId,
+                                                referenceDate);
+                                }).collect(Collectors.toList())
+
+                        ).flatMap(Collection::stream).collect(Collectors.toList());
+
+                }
                 if (type.equals(ScenarioType.MANAGER)) {
-                        Map<String, String> assignMap = assignements.stream()
-                                .collect(Collectors.toMap(Assignement::getSurveyUnitId, Assignement::getInterviewerId));
-
-                        // Vérifier et créer les intervieweurs s'ils n'existent pas déjà
-                        List<String> interviewersToCreate = assignMap.values().stream().distinct().collect(Collectors.toList());
-                        if (!checkInterviewers(interviewersToCreate, request, plateform)) {
-                                LOGGER.error("Failed to create interviewers: " + interviewersToCreate);
-                                return newSurveyUnits;
-                        }
+                        Map<String, String> assignMap = assignements.stream().collect(
+                                Collectors.toMap(Assignement::getSurveyUnitId, Assignement::getInterviewerId));
                         newSurveyUnits = pearlSurveyUnits.stream()
-                                .map(su -> updatePearlSurveyUnit(su, assignMap.get(su.getId()), pearlCampaign, campaign, organisationUnitId, referenceDate))
+                                .map(su -> updatePearlSurveyUnit(su, assignMap.get(su.getId()), pearlCampaign,
+                                        campaign, organisationUnitId, referenceDate))
                                 .collect(Collectors.toList());
+
                 }
+
                 return newSurveyUnits;
         }
 
         private fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto updatePearlSurveyUnit(
-                        fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto initialSurveyUnit, String interviewer,
-                        fr.insee.sabianedata.ws.model.pearl.CampaignDto pearlCampaign, String campaign,
-                        String organisationUnitId, Long referenceDate) {
+                fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto initialSurveyUnit, String interviewer,
+                fr.insee.sabianedata.ws.model.pearl.CampaignDto pearlCampaign, String campaign,
+                String organisationUnitId, Long referenceDate) {
 
                 fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto newSu = new fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto(
-                                initialSurveyUnit);
+                        initialSurveyUnit);
                 newSu.setCampaign(pearlCampaign.getCampaign());
                 newSu.setOrganizationUnitId(organisationUnitId);
                 newSu.setId(String.join("_", initialSurveyUnit.getId(), campaign, interviewer,
-                                referenceDate.toString()));
+                        referenceDate.toString()));
 
                 // states
                 List<SurveyUnitStateDto> statesList = Optional.ofNullable(initialSurveyUnit.getStates())
-                                .orElse(new ArrayList<>()).stream()
-                                .map(state -> new SurveyUnitStateDto(state, referenceDate))
-                                .collect(Collectors.toList());
+                        .orElse(new ArrayList<>()).stream()
+                        .map(state -> new SurveyUnitStateDto(state, referenceDate))
+                        .collect(Collectors.toList());
                 ArrayList<SurveyUnitStateDto> newStates = new ArrayList<>(statesList);
                 newSu.setStates(newStates);
 
                 // contactOutcome
                 ContactOutcomeDto newContactOutcomeDto = initialSurveyUnit.getContactOutcome() != null
-                                ? new ContactOutcomeDto(initialSurveyUnit.getContactOutcome(), referenceDate)
-                                : null;
+                        ? new ContactOutcomeDto(initialSurveyUnit.getContactOutcome(), referenceDate)
+                        : null;
                 newSu.setContactOutcome(newContactOutcomeDto);
 
                 // contactAttempts
                 List<ContactAttemptDto> newCAs = Optional.ofNullable(initialSurveyUnit.getContactAttempts())
-                                .orElse(new ArrayList<>()).stream()
-                                .map(ca -> new ContactAttemptDto(ca, referenceDate, ca.getMedium()))
-                                .collect(Collectors.toList());
+                        .orElse(new ArrayList<>()).stream()
+                        .map(ca -> new ContactAttemptDto(ca, referenceDate, ca.getMedium()))
+                        .collect(Collectors.toList());
                 ArrayList<ContactAttemptDto> newContactAttempts = new ArrayList<>(newCAs);
                 newSu.setContactAttempts(newContactAttempts);
 
@@ -311,10 +309,10 @@ public class MassiveAttackService {
         }
 
         private SurveyUnitDto updateQueenSurveyUnit(SurveyUnitDto initialSurveyUnit, String interviewer,
-                        String campaign, String newQuestionnaireId, Long referenceDate) {
+                                                    String campaign, String newQuestionnaireId, Long referenceDate) {
 
                 String newId = String.join("_", initialSurveyUnit.getId(), campaign, interviewer,
-                                referenceDate.toString());
+                        referenceDate.toString());
                 SurveyUnit newSu = new SurveyUnit(newId, newQuestionnaireId, initialSurveyUnit.getStateData());
                 SurveyUnitDto newSuDto = new SurveyUnitDto(initialSurveyUnit, newSu);
                 return newSuDto;
@@ -322,8 +320,8 @@ public class MassiveAttackService {
         }
 
         private List<SurveyUnitDto> generateQueenSurveyUnits(String campaign, Long referenceDate,
-                        List<SurveyUnitDto> queenSurveyUnits, List<String> interviewers, List<Assignement> assignements,
-                        ScenarioType type, HashMap<String, String> questionnaireIdMapping) {
+                                                             List<SurveyUnitDto> queenSurveyUnits, List<String> interviewers, List<Assignement> assignements,
+                                                             ScenarioType type, HashMap<String, String> questionnaireIdMapping) {
                 List<SurveyUnitDto> newSurveyUnits = new ArrayList<>();
                 if (type.equals(ScenarioType.INTERVIEWER)) {
                         newSurveyUnits = interviewers.stream().map(in -> queenSurveyUnits.stream().map(sudto -> {
@@ -334,11 +332,11 @@ public class MassiveAttackService {
                 }
                 if (type.equals(ScenarioType.MANAGER)) {
                         Map<String, String> assignMap = assignements.stream().collect(
-                                        Collectors.toMap(Assignement::getSurveyUnitId, Assignement::getInterviewerId));
+                                Collectors.toMap(Assignement::getSurveyUnitId, Assignement::getInterviewerId));
                         newSurveyUnits = queenSurveyUnits.stream().map(su -> {
                                 String newQuestionnaireId = questionnaireIdMapping.get(su.getQuestionnaireId());
                                 return updateQueenSurveyUnit(su, assignMap.get(su.getId()), campaign,
-                                                newQuestionnaireId, referenceDate);
+                                        newQuestionnaireId, referenceDate);
                         }).collect(Collectors.toList());
 
                 }
@@ -346,13 +344,13 @@ public class MassiveAttackService {
         }
 
         private ArrayList<Visibility> updatingVisibilities(Long referenceDate, String organisationUnitId,
-                        List<Visibility> previousVisibilities) {
+                                                           List<Visibility> previousVisibilities) {
 
                 List<Visibility> newVisibilities = previousVisibilities.stream()
-                                .map(v -> new Visibility(v, referenceDate)).map(v -> {
-                                        v.setOrganizationalUnit(organisationUnitId);
-                                        return v;
-                                }).collect(Collectors.toList());
+                        .map(v -> new Visibility(v, referenceDate)).map(v -> {
+                                v.setOrganizationalUnit(organisationUnitId);
+                                return v;
+                        }).collect(Collectors.toList());
 
                 return new ArrayList<Visibility>(newVisibilities);
 
@@ -363,7 +361,7 @@ public class MassiveAttackService {
         }
 
         public TrainingCourse postTrainingCourse(TrainingCourse tc, HttpServletRequest request, Long referenceDate,
-                        Plateform plateform, List<String> interviewers) {
+                                                 Plateform plateform, List<String> interviewers) {
 
                 boolean pearlCampaignSuccess = false;
                 boolean pearlSurveyUnitSuccess = false;
@@ -397,7 +395,7 @@ public class MassiveAttackService {
                 }
                 boolean pearlSuccess = pearlCampaignSuccess && pearlSurveyUnitSuccess && assignementSuccess;
                 String pearlMessage = String.format("Campaign : %b, SurveyUnits: %b, Assignements: %b",
-                                pearlCampaignSuccess, pearlSurveyUnitSuccess, assignementSuccess);
+                        pearlCampaignSuccess, pearlSurveyUnitSuccess, assignementSuccess);
                 LOGGER.info(pearlMessage);
 
                 // POST queen entities
@@ -451,22 +449,22 @@ public class MassiveAttackService {
                 }).count();
 
                 boolean queenSuccess = queenCampaignSuccess && nomenclaturesSuccess == tc.getNomenclatures().size()
-                                && questionnairesSuccess == tc.getQuestionnaireModels().size()
-                                && queenSurveyUnitsSuccess == tc.getQueenSurveyUnits().size();
+                        && questionnairesSuccess == tc.getQuestionnaireModels().size()
+                        && queenSurveyUnitsSuccess == tc.getQueenSurveyUnits().size();
                 String queenMessage = String.format(
-                                "Nomenclatures: %d/%d, Questionnaires: %d/%d, SurveyUnits: %d/%d, Campaign: %b",
-                                nomenclaturesSuccess, tc.getNomenclatures().size(), questionnairesSuccess,
-                                tc.getQuestionnaireModels().size(), queenSurveyUnitsSuccess,
-                                tc.getQueenSurveyUnits().size(), queenCampaignSuccess);
+                        "Nomenclatures: %d/%d, Questionnaires: %d/%d, SurveyUnits: %d/%d, Campaign: %b",
+                        nomenclaturesSuccess, tc.getNomenclatures().size(), questionnairesSuccess,
+                        tc.getQuestionnaireModels().size(), queenSurveyUnitsSuccess,
+                        tc.getQueenSurveyUnits().size(), queenCampaignSuccess);
 
                 LOGGER.info(queenMessage);
 
                 return pearlSuccess && queenSuccess ? tc : null;
         }
         public ResponseModel generateTrainingScenario(String scenarioId, String campaignLabel,
-                        String organisationUnitId,
-                        HttpServletRequest request, Long referenceDate, Plateform plateform,
-                        List<String> interviewers) {
+                                                      String organisationUnitId,
+                                                      HttpServletRequest request, Long referenceDate, Plateform plateform,
+                                                      List<String> interviewers) {
                 //TODO: use MAP SCENARIOS
                 ScenarioType type = trainingScenarioService.getScenarioType(tempScenariiFolder, scenarioId);
                 if (type == ScenarioType.INTERVIEWER && !checkInterviewers(interviewers, request, plateform)) {
@@ -475,15 +473,15 @@ public class MassiveAttackService {
                 if (type == ScenarioType.MANAGER && !checkUsers(interviewers, request, plateform)) {
                         return new ResponseModel(false, "Error when checking users");
                 }
-                        // TODO MAP
+                // TODO MAP
                 TrainingScenario scenar = trainingScenarioService.getTrainingScenario(tempScenariiFolder, scenarioId);
 
                 List<TrainingCourse> trainingCourses = scenar.getCampaigns().stream().map(camp -> {
                         try {
                                 return prepareTrainingCourse(camp.getCampaign(), scenarioId, camp.getCampaignLabel(),
-                                                organisationUnitId,
-                                                request, referenceDate, plateform, interviewers, scenar.getType(),
-                                                scenar, campaignLabel);
+                                        organisationUnitId,
+                                        request, referenceDate, plateform, interviewers, scenar.getType(),
+                                        scenar, campaignLabel);
                         } catch (Exception e1) {
                                 LOGGER.error("coudn't create training course " + camp.getCampaign(), e1);
                                 e1.printStackTrace();
@@ -493,17 +491,17 @@ public class MassiveAttackService {
 
                 if (trainingCourses.contains(null)) {
                         rollBackOnFail(trainingCourses.stream().filter(tc -> tc != null).map(tc -> tc.getCampaignId())
-                                        .collect(Collectors.toList()), request, plateform);
+                                .collect(Collectors.toList()), request, plateform);
                         return new ResponseModel(false, "Error when loading campaigns");
                 }
 
                 boolean success = trainingCourses.stream()
-                                .map(tc -> postTrainingCourse(tc, request, referenceDate, plateform, interviewers))
-                                .filter(tc -> tc == null).collect(Collectors.toList()).size() == 0;
+                        .map(tc -> postTrainingCourse(tc, request, referenceDate, plateform, interviewers))
+                        .filter(tc -> tc == null).collect(Collectors.toList()).size() == 0;
 
                 if (!success) {
                         rollBackOnFail(trainingCourses.stream().map(tc -> tc.getCampaignId())
-                                        .collect(Collectors.toList()), request, plateform);
+                                .collect(Collectors.toList()), request, plateform);
                         return new ResponseModel(false, "Error when posting campaigns");
                 }
                 return new ResponseModel(true, "Training scenario generated");
@@ -518,25 +516,25 @@ public class MassiveAttackService {
                 validInterviewer.setEmail("firstname.lastname@valid.net");
                 validInterviewer.setPhoneNumber("+33000000000");
                 return interviewers.stream().map(inter -> {
-                        validInterviewer.setId(inter);
-                        try {
-                                ResponseEntity<?> postResponse = pearlApiService.postInterviewersToApi(request,
+                                validInterviewer.setId(inter);
+                                try {
+                                        ResponseEntity<?> postResponse = pearlApiService.postInterviewersToApi(request,
                                                 interviewerList, plateform);
-                                LOGGER.info("Interviewer " + inter + " created.");
-                                return postResponse;
-                        } catch (JsonProcessingException e) {
-                                LOGGER.warn("Error when creating interviewer " + inter);
-                                LOGGER.error(e.getMessage());
-                                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                        } catch (RestClientException e) {
-                                LOGGER.info("Interviewer " + inter + " already present.");
-                                LOGGER.debug(e.getMessage());
+                                        LOGGER.info("Interviewer " + inter + " created.");
+                                        return postResponse;
+                                } catch (JsonProcessingException e) {
+                                        LOGGER.warn("Error when creating interviewer " + inter);
+                                        LOGGER.error(e.getMessage());
+                                        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                                } catch (RestClientException e) {
+                                        LOGGER.info("Interviewer " + inter + " already present.");
+                                        LOGGER.debug(e.getMessage());
 
-                                return new ResponseEntity<>(HttpStatus.OK);
-                        }
+                                        return new ResponseEntity<>(HttpStatus.OK);
+                                }
 
-                }).filter(response -> !response.getStatusCode().is2xxSuccessful()).collect(Collectors.toList())
-                                .size() == 0;
+                        }).filter(response -> !response.getStatusCode().is2xxSuccessful()).collect(Collectors.toList())
+                        .size() == 0;
 
         }
 
@@ -554,25 +552,25 @@ public class MassiveAttackService {
                 validUser.setFirstName("FirstName");
                 validUser.setLastName("LastName");
                 return users.stream().map(user -> {
-                        validUser.setId(user);
-                        try {
-                                ResponseEntity<?> postResponse = pearlApiService.postUsersToApi(request, userList,
+                                validUser.setId(user);
+                                try {
+                                        ResponseEntity<?> postResponse = pearlApiService.postUsersToApi(request, userList,
                                                 ou.getId(), plateform);
-                                LOGGER.info("User " + user + " created.");
-                                return postResponse;
-                        } catch (JsonProcessingException e) {
-                                LOGGER.warn("Error when creating user " + user);
-                                LOGGER.error(e.getMessage());
-                                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                        } catch (RestClientException e) {
-                                LOGGER.info("User " + user + " already present.");
-                                LOGGER.debug(e.getMessage());
+                                        LOGGER.info("User " + user + " created.");
+                                        return postResponse;
+                                } catch (JsonProcessingException e) {
+                                        LOGGER.warn("Error when creating user " + user);
+                                        LOGGER.error(e.getMessage());
+                                        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                                } catch (RestClientException e) {
+                                        LOGGER.info("User " + user + " already present.");
+                                        LOGGER.debug(e.getMessage());
 
-                                return new ResponseEntity<>(HttpStatus.OK);
-                        }
+                                        return new ResponseEntity<>(HttpStatus.OK);
+                                }
 
-                }).filter(response -> !response.getStatusCode().is2xxSuccessful()).collect(Collectors.toList())
-                                .size() == 0;
+                        }).filter(response -> !response.getStatusCode().is2xxSuccessful()).collect(Collectors.toList())
+                        .size() == 0;
 
         }
 
@@ -585,7 +583,7 @@ public class MassiveAttackService {
                 ResponseEntity<String> pearlResponse = pearlApiService.deleteCampaign(request, plateform, id);
                 ResponseEntity<String> queenResponse = queenApiService.deleteCampaign(request, plateform, id);
                 LOGGER.info("DELETE campaign with id {} : pearl={} / queen={}", id,
-                                pearlResponse.getStatusCode().toString(), queenResponse.getStatusCode().toString());
+                        pearlResponse.getStatusCode().toString(), queenResponse.getStatusCode().toString());
                 return ResponseEntity.ok().build();
 
         }
