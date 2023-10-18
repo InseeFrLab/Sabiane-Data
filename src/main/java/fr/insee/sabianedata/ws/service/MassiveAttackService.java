@@ -240,34 +240,36 @@ public class MassiveAttackService {
 
         }
 
-        private List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> generatePearlSurveyUnits(String campaign,
-                        fr.insee.sabianedata.ws.model.pearl.CampaignDto pearlCampaign, Long referenceDate,
-                        String organisationUnitId,
-                        List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> pearlSurveyUnits,
-                        List<String> interviewers, List<Assignement> assignements, ScenarioType type) {
+        private List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> generatePearlSurveyUnits(
+                String campaign, fr.insee.sabianedata.ws.model.pearl.CampaignDto pearlCampaign,
+                Long referenceDate, String organisationUnitId,
+                List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> pearlSurveyUnits,
+                List<String> interviewers, List<Assignement> assignements, ScenarioType type,
+                HttpServletRequest request, Plateform plateform) {
 
                 List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> newSurveyUnits = new ArrayList<>();
 
                 if (type.equals(ScenarioType.INTERVIEWER)) {
-                        newSurveyUnits = interviewers.stream().map(in -> pearlSurveyUnits.stream().map(su -> {
-
-                                return updatePearlSurveyUnit(su, in, pearlCampaign, campaign, organisationUnitId,
-                                                referenceDate);
-                        }).collect(Collectors.toList())
-
-                        ).flatMap(Collection::stream).collect(Collectors.toList());
-
+                        newSurveyUnits = interviewers.stream()
+                                .flatMap(in -> pearlSurveyUnits.stream()
+                                        .map(su -> updatePearlSurveyUnit(su, in, pearlCampaign, campaign, organisationUnitId, referenceDate)))
+                                .collect(Collectors.toList());
                 }
+
                 if (type.equals(ScenarioType.MANAGER)) {
-                        Map<String, String> assignMap = assignements.stream().collect(
-                                        Collectors.toMap(Assignement::getSurveyUnitId, Assignement::getInterviewerId));
+                        Map<String, String> assignMap = assignements.stream()
+                                .collect(Collectors.toMap(Assignement::getSurveyUnitId, Assignement::getInterviewerId));
+
+                        // Vérifier et créer les intervieweurs s'ils n'existent pas déjà
+                        List<String> interviewersToCreate = assignMap.values().stream().distinct().collect(Collectors.toList());
+                        if (!checkInterviewers(interviewersToCreate, request, plateform)) {
+                                LOGGER.error("Failed to create interviewers: " + interviewersToCreate);
+                                return newSurveyUnits;
+                        }
                         newSurveyUnits = pearlSurveyUnits.stream()
-                                        .map(su -> updatePearlSurveyUnit(su, assignMap.get(su.getId()), pearlCampaign,
-                                                        campaign, organisationUnitId, referenceDate))
-                                        .collect(Collectors.toList());
-
+                                .map(su -> updatePearlSurveyUnit(su, assignMap.get(su.getId()), pearlCampaign, campaign, organisationUnitId, referenceDate))
+                                .collect(Collectors.toList());
                 }
-
                 return newSurveyUnits;
         }
 
