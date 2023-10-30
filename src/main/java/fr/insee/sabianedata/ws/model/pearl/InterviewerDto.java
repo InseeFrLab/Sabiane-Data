@@ -15,7 +15,7 @@ public class InterviewerDto {
     @JacksonXmlProperty(localName="Email")
     private String email;
     @JacksonXmlProperty(localName="PhoneNumber")
-    private String phoneNumer; // TODO : correct to phoneNumber !
+    private String phoneNumber; // TODO : correct to phoneNumber !
 
     public String getId() {
         return id;
@@ -49,12 +49,12 @@ public class InterviewerDto {
         this.email = email;
     }
 
-    public String getPhoneNumer() {
-        return phoneNumer;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhoneNumer(String phoneNumer) {
-        this.phoneNumer = phoneNumer;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public InterviewerDto() {
@@ -67,7 +67,7 @@ public class InterviewerDto {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", phoneNumber='" + phoneNumer + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
     }
 }

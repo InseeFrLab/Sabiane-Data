@@ -477,7 +477,7 @@ public class MassiveAttackService {
                 if (type == ScenarioType.INTERVIEWER && !checkInterviewers(interviewers, request, plateform)) {
                         return new ResponseModel(false, "Error when checking interviewers");
                 }
-                if (type == ScenarioType.MANAGER && !checkUsers(interviewers, request, plateform)) {
+                if (type == ScenarioType.MANAGER && !checkInterviewers(interviewers, request, plateform)) {
                         return new ResponseModel(false, "Error when checking users");
                 }
 
@@ -521,7 +521,7 @@ public class MassiveAttackService {
                 validInterviewer.setFirstName("FirstName");
                 validInterviewer.setLastName("LastName");
                 validInterviewer.setEmail("firstname.lastname@valid.net");
-                validInterviewer.setPhoneNumer("+33000000000");
+                validInterviewer.setPhoneNumber("+33000000000");
                 return interviewers.stream().map(inter -> {
                         validInterviewer.setId(inter);
                         try {
