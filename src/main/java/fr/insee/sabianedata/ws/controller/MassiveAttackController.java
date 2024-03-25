@@ -1,33 +1,27 @@
 package fr.insee.sabianedata.ws.controller;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import fr.insee.sabianedata.ws.config.Plateform;
+import fr.insee.sabianedata.ws.model.ResponseModel;
+import fr.insee.sabianedata.ws.model.massiveAttack.OrganisationUnitDto;
+import fr.insee.sabianedata.ws.model.massiveAttack.TrainingScenario;
+import fr.insee.sabianedata.ws.model.pearl.Campaign;
+import fr.insee.sabianedata.ws.model.pearl.CampaignId;
+import fr.insee.sabianedata.ws.service.MassiveAttackService;
+import fr.insee.sabianedata.ws.service.PearlApiService;
+import fr.insee.sabianedata.ws.service.UtilsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import fr.insee.sabianedata.ws.config.Plateform;
-import fr.insee.sabianedata.ws.model.ResponseModel;
-import fr.insee.sabianedata.ws.model.massiveAttack.OrganisationUnitDto;
-import fr.insee.sabianedata.ws.model.massiveAttack.TrainingScenario;
-import fr.insee.sabianedata.ws.model.pearl.Campaign;
-import fr.insee.sabianedata.ws.service.MassiveAttackService;
-import fr.insee.sabianedata.ws.service.PearlApiService;
-import fr.insee.sabianedata.ws.service.UtilsService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Massive Attack : Post data to Pearl and Queen APIs")
 @RestController
@@ -93,6 +87,11 @@ public class MassiveAttackController {
     public ResponseEntity<String> deleteCampaignById(HttpServletRequest request,
             @PathVariable(value = "id") String campaignId, @RequestParam(value = "plateform") Plateform plateform) {
         LOGGER.warn("USER : " + utilsService.getRequesterId(request) + " | delete campaign " + campaignId);
+
+        if (campaignId == null || campaignId.isEmpty() || !campaignId.contains("/")) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         return massiveAttackService.deleteCampaign(request, plateform, campaignId);
     }
 
@@ -105,6 +104,29 @@ public class MassiveAttackController {
 
         LOGGER.info("USER : " + utilsService.getRequesterId(request) + " | get campaigns ");
         return new ResponseEntity<>(pearlCampaigns, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get a training course by ID")
+    @GetMapping(path = "/training-courses/{id}")
+    public ResponseEntity<CampaignId> getTrainingCourseById(
+            HttpServletRequest request,
+            @PathVariable("id") String id,
+            @RequestParam(value = "plateform") Plateform plateform,
+            @RequestParam(value = "admin", defaultValue = "false") boolean admin) {
+
+        String requesterId = utilsService.getRequesterId(request);
+        LOGGER.info("USER : {} | get campaign by ID: {}", requesterId, id);
+        if (id == null || id.isEmpty() || !id.contains("/")) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<CampaignId> campaign = pearlApiService.getCampaignById(request, id, plateform);
+
+        if (!campaign.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(campaign.get(), HttpStatus.OK);
     }
 
     @Operation(summary = "Return all OrganisationalUnits")

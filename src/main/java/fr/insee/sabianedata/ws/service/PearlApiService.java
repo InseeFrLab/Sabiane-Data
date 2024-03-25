@@ -1,38 +1,27 @@
 package fr.insee.sabianedata.ws.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import fr.insee.sabianedata.ws.config.PearlProperties;
 import fr.insee.sabianedata.ws.config.Plateform;
 import fr.insee.sabianedata.ws.model.massiveAttack.OrganisationUnitDto;
 import fr.insee.sabianedata.ws.model.massiveAttack.PearlUser;
-import fr.insee.sabianedata.ws.model.pearl.Assignement;
-import fr.insee.sabianedata.ws.model.pearl.Campaign;
-import fr.insee.sabianedata.ws.model.pearl.CampaignDto;
-import fr.insee.sabianedata.ws.model.pearl.InterviewerDto;
-import fr.insee.sabianedata.ws.model.pearl.OrganisationUnitContextDto;
-import fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto;
-import fr.insee.sabianedata.ws.model.pearl.UserDto;
+import fr.insee.sabianedata.ws.model.pearl.*;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PearlApiService {
@@ -107,7 +96,7 @@ public class PearlApiService {
     public HttpHeaders createSimpleHeadersAuth(HttpServletRequest request) {
         String authTokenHeader = request.getHeader("Authorization");
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         if (!StringUtils.isBlank(authTokenHeader))
             httpHeaders.set("Authorization", authTokenHeader);
         return httpHeaders;
@@ -148,6 +137,48 @@ public class PearlApiService {
             LOGGER.warn("API call not OK");
         }
         return new ArrayList<>();
+    }
+
+    public Optional<CampaignId> getCampaignById(HttpServletRequest request, String id, Plateform plateform) {
+
+        if (id == null || id.isEmpty()) {
+            LOGGER.warn("API call for campaign by ID should not be null or empty");
+            return Optional.empty();
+        }
+
+        String encodedId;
+
+        try {
+            encodedId = URLEncoder.encode(id, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.error("Error when encoding {}", id);
+            return Optional.empty();
+        }
+
+        final String apiUri = pearlProperties.getHostFromEnum(plateform) + "/api/campaign/" + encodedId;
+
+        HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        LOGGER.info("Trying to get campaign by ID: {}", id);
+
+        try {
+
+            ResponseEntity<CampaignId> campaignResponse = restTemplate.exchange(apiUri, HttpMethod.GET,
+                    new HttpEntity<>(httpHeaders), CampaignId.class);
+
+            if (campaignResponse.getStatusCode() == HttpStatus.OK) {
+
+                LOGGER.info("API call for campaign by ID is OK");
+                return Optional.ofNullable(campaignResponse.getBody());
+            } else {
+                LOGGER.warn("API call for campaign by ID not OK");
+                return Optional.empty();
+            }
+        } catch (RestClientException rce) {
+            LOGGER.warn("Not found");
+        }
+        return Optional.empty();
+
     }
 
     public ResponseEntity<String> deleteCampaign(HttpServletRequest request, Plateform plateform, String id) {
