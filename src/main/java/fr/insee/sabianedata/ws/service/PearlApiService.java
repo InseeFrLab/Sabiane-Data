@@ -16,6 +16,10 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -136,15 +140,26 @@ public class PearlApiService {
     }
 
     public Optional<CampaignId> getCampaignById(HttpServletRequest request, String id, Plateform plateform) {
-        final String apiUri = pearlProperties.getHostFromEnum(plateform) + "/api/campaign/" + id;
+
+        if (id == null || id.isEmpty()) {
+            LOGGER.warn("API call for campaign by ID should not be null or empty");
+            return Optional.empty();
+        }
+
+        String encodedId;
+
+        try {
+            encodedId = URLEncoder.encode(id, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.error("Error when encoding {}", id);
+            return Optional.empty();
+        }
+
+        final String apiUri = pearlProperties.getHostFromEnum(plateform) + "/api/campaign/" + encodedId;
+
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         LOGGER.info("Trying to get campaign by ID: {}", id);
-
-        if (id == null || id.isEmpty() || !id.contains("/")) {
-            LOGGER.warn("API call for campaign by ID should not be null, empty or containing `/`");
-            return Optional.empty();
-        }
 
         try {
 

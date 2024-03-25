@@ -114,6 +114,8 @@ public class MassiveAttackController {
             @RequestParam(value = "plateform") Plateform plateform,
             @RequestParam(value = "admin", defaultValue = "false") boolean admin) {
 
+        String requesterId = utilsService.getRequesterId(request);
+        LOGGER.info("USER : {} | get campaign by ID: {}", requesterId, id);
         if (id == null || id.isEmpty() || !id.contains("/")) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -124,7 +126,6 @@ public class MassiveAttackController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        LOGGER.info("USER : {} | get campaign by ID: {}", utilsService.getRequesterId(request), id);
         return new ResponseEntity<>(campaign.get(), HttpStatus.OK);
     }
 
