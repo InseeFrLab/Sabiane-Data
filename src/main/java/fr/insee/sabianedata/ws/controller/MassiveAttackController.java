@@ -124,7 +124,7 @@ public class MassiveAttackController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        LOGGER.info("USER : " + utilsService.getRequesterId(request) + " | get campaign by ID: " + id);
+        LOGGER.info("USER : {} | get campaign by ID: {}", utilsService.getRequesterId(request), id);
         return new ResponseEntity<>(campaign.get(), HttpStatus.OK);
     }
 

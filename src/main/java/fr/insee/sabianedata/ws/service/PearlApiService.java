@@ -40,7 +40,7 @@ public class PearlApiService {
     }
 
     public ResponseEntity<?> postUesToApi(HttpServletRequest request, List<SurveyUnitDto> surveyUnits,
-                                          Plateform plateform) throws JsonProcessingException {
+            Plateform plateform) throws JsonProcessingException {
         LOGGER.info("Create SurveyUnits ");
         final String apiUri = pearlProperties.getHostFromEnum(plateform) + "/api/survey-units";
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
@@ -49,7 +49,7 @@ public class PearlApiService {
     }
 
     public ResponseEntity<?> postInterviewersToApi(HttpServletRequest request, List<InterviewerDto> interviewers,
-                                                   Plateform plateform) throws JsonProcessingException {
+            Plateform plateform) throws JsonProcessingException {
         LOGGER.info("Create interviewers");
         final String apiUri = pearlProperties.getHostFromEnum(plateform) + "/api/interviewers";
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
@@ -60,7 +60,7 @@ public class PearlApiService {
     }
 
     public ResponseEntity<?> postUsersToApi(HttpServletRequest request, List<UserDto> users, String OuId,
-                                            Plateform plateform) throws JsonProcessingException {
+            Plateform plateform) throws JsonProcessingException {
         LOGGER.info("Try to create users with id {}", users.stream().map(u -> u.getId()).collect(Collectors.toList()));
         final String apiUri = pearlProperties.getHostFromEnum(plateform) + "/api/organization-unit/" + OuId + "/users";
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
@@ -70,7 +70,7 @@ public class PearlApiService {
     }
 
     public ResponseEntity<?> postAssignementsToApi(HttpServletRequest request, List<Assignement> assignements,
-                                                   Plateform plateform) {
+            Plateform plateform) {
         LOGGER.info("Create assignements");
         final String apiUri = pearlProperties.getHostFromEnum(plateform) + "/api/survey-units/interviewers";
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
@@ -80,7 +80,7 @@ public class PearlApiService {
     }
 
     public ResponseEntity<?> postContextToApi(HttpServletRequest request,
-                                              List<OrganisationUnitContextDto> organisationUnits, Plateform plateform) {
+            List<OrganisationUnitContextDto> organisationUnits, Plateform plateform) {
         LOGGER.info("Create Context (organisationUnits)");
         final String apiUri = pearlProperties.getHostFromEnum(plateform) + "/api/organization-units";
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
@@ -139,9 +139,14 @@ public class PearlApiService {
         final String apiUri = pearlProperties.getHostFromEnum(plateform) + "/api/campaign/" + id;
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        LOGGER.info("Trying to get campaign by ID: " + id);
-        try {
+        LOGGER.info("Trying to get campaign by ID: {}", id);
 
+        if (id == null || id.isEmpty() || !id.contains("/")) {
+            LOGGER.warn("API call for campaign by ID should not be null, empty or containing `/`");
+            return Optional.empty();
+        }
+
+        try {
 
             ResponseEntity<CampaignId> campaignResponse = restTemplate.exchange(apiUri, HttpMethod.GET,
                     new HttpEntity<>(httpHeaders), CampaignId.class);
@@ -160,7 +165,6 @@ public class PearlApiService {
         return Optional.empty();
 
     }
-
 
     public ResponseEntity<String> deleteCampaign(HttpServletRequest request, Plateform plateform, String id) {
         LOGGER.info("pearl service : delete");
