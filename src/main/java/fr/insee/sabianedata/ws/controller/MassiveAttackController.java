@@ -87,6 +87,11 @@ public class MassiveAttackController {
     public ResponseEntity<String> deleteCampaignById(HttpServletRequest request,
             @PathVariable(value = "id") String campaignId, @RequestParam(value = "plateform") Plateform plateform) {
         LOGGER.warn("USER : " + utilsService.getRequesterId(request) + " | delete campaign " + campaignId);
+
+        if (campaignId == null || campaignId.isEmpty() || !campaignId.contains("/")) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         return massiveAttackService.deleteCampaign(request, plateform, campaignId);
     }
 
