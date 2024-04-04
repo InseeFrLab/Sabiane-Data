@@ -54,11 +54,6 @@ jobs:
         with:
           name: war
           path: target/
-      - name: Download glowroot
-        id: downloadGlowroot
-        uses: actions/download-artifact@v4
-        with:
-          name: glowroot
       - name: Get current version
         id: version
         run: echo "::set-output name=prop::$(mvn -f pom.xml help:evaluate -Dexpression=project.version -q -DforceStdout)"
