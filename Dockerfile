@@ -1,4 +1,5 @@
-FROM tomcat:8.5-jdk11-slim
+FROM tomcat:9-jre11-temurin
+# Note: Tomcat 10 is not compatible with Spring Boot 2!!
 
 RUN rm -rf $CATALINA_HOME/webapps/*
 COPY sabdatab.properties log4j2.xml $CATALINA_HOME/webapps/
