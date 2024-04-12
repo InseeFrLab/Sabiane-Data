@@ -45,7 +45,6 @@ public class QueenExtractEntities {
         List<SurveyUnitDto> surveyUnitsList = surveyUnits.getSurveyUnits().stream().map(s -> {
             SurveyUnitDto suDto = new SurveyUnitDto(s);
             suDto.extractJsonFromFiles(folder);
-            suDto.generateStateData();
             return suDto;
         }).collect(Collectors.toList());
         return surveyUnitsList != null ? surveyUnitsList : lists;
