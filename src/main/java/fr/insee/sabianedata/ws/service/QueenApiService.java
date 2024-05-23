@@ -7,9 +7,9 @@ import fr.insee.sabianedata.ws.model.queen.CampaignDto;
 import fr.insee.sabianedata.ws.model.queen.NomenclatureDto;
 import fr.insee.sabianedata.ws.model.queen.QuestionnaireModelDto;
 import fr.insee.sabianedata.ws.model.queen.SurveyUnitDto;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
@@ -23,9 +23,8 @@ import java.io.File;
 import java.util.Arrays;
 
 @Service
+@Slf4j
 public class QueenApiService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(QueenApiService.class);
 
     @Autowired
     QueenProperties queenProperties;
@@ -35,7 +34,7 @@ public class QueenApiService {
 
     public ResponseEntity<?> postCampaignToApi(HttpServletRequest request, CampaignDto campaignDto,
             Plateform plateform) {
-        LOGGER.info("Creating Campaign" + campaignDto.getId());
+        log.info("Creating Campaign {}", campaignDto.getId());
         final String apiUri = queenProperties.getHostFromEnum(plateform) + "/api/campaigns";
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -44,7 +43,7 @@ public class QueenApiService {
 
     public ResponseEntity<?> postUeToApi(HttpServletRequest request, SurveyUnitDto surveyUnitDto,
             CampaignDto campaignDto, Plateform plateform) throws JsonProcessingException {
-        LOGGER.info("Create SurveyUnit " + surveyUnitDto.getId());
+        log.info("Create SurveyUnit {}", surveyUnitDto.getId());
         String idCampaign = campaignDto.getId();
         final String apiUri = queenProperties.getHostFromEnum(plateform) + "/api/campaign/" + idCampaign
                 + "/survey-unit";
@@ -56,18 +55,18 @@ public class QueenApiService {
 
     public ResponseEntity<?> postNomenclaturesToApi(HttpServletRequest request, NomenclatureDto nomenclatureDto,
             Plateform plateform) {
-        LOGGER.info("Create nomenclature " + nomenclatureDto.getId());
+        log.info("Create nomenclature {}", nomenclatureDto.getId());
         final String apiUri = queenProperties.getHostFromEnum(plateform) + "/api/nomenclature";
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        LOGGER.info("Calling {}", apiUri);
+        log.info("Calling {}", apiUri);
         return restTemplate.exchange(apiUri, HttpMethod.POST, new HttpEntity<>(nomenclatureDto, httpHeaders),
                 String.class);
     }
 
     public ResponseEntity<?> postQuestionnaireModelToApi(HttpServletRequest request,
             QuestionnaireModelDto questionnaireModelDto, Plateform plateform) {
-        LOGGER.info("Create Questionnaire " + questionnaireModelDto.getIdQuestionnaireModel());
+        log.info("Create Questionnaire {}", questionnaireModelDto.getIdQuestionnaireModel());
         final String apiUri = queenProperties.getHostFromEnum(plateform) + "/api/questionnaire-models";
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);

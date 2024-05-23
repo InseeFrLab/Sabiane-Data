@@ -35,9 +35,10 @@
         <xsl:variable name="firstRow" select="tools:get-full-row(table:table-row[1])"/>
         <xsl:variable name="secondRow" select="tools:get-full-row(table:table-row[2])"/>
         <Metadata>
-            <InseeContext><xsl:value-of select="tools:getColumn($secondRow,1)"/></InseeContext>
-            <Variables>
-                <xsl:for-each select="$firstRow/table:table-cell">
+            <MetadataValue>
+                <InseeContext><xsl:value-of select="tools:getColumn($secondRow,1)"/></InseeContext>
+                <Variables>
+                    <xsl:for-each select="$firstRow/table:table-cell">
                     <xsl:if test="normalize-space(.)!='' and position()>1">
                         <Variable>
                             <Name><xsl:value-of select="tools:getColumn($firstRow,position())"/></Name>
@@ -46,6 +47,7 @@
                     </xsl:if>
                 </xsl:for-each>
             </Variables>
+        </MetadataValue>
         </Metadata>
     </xsl:template>
 </xsl:stylesheet>

@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -21,8 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
@@ -47,15 +46,16 @@ import fr.insee.sabianedata.ws.model.pearl.SurveyUnitStateDto;
 import fr.insee.sabianedata.ws.model.pearl.UserDto;
 import fr.insee.sabianedata.ws.model.pearl.Visibility;
 import fr.insee.sabianedata.ws.model.queen.CampaignDto;
+import fr.insee.sabianedata.ws.model.queen.MetadataDto;
 import fr.insee.sabianedata.ws.model.queen.NomenclatureDto;
 import fr.insee.sabianedata.ws.model.queen.QuestionnaireModelDto;
 import fr.insee.sabianedata.ws.model.queen.SurveyUnit;
 import fr.insee.sabianedata.ws.model.queen.SurveyUnitDto;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class MassiveAttackService {
-
-        private static final Logger LOGGER = LoggerFactory.getLogger(MassiveAttackService.class);
 
         @Autowired
         private QueenExtractEntities queenExtractEntities;
@@ -101,25 +101,25 @@ public class MassiveAttackService {
                                 .map(f -> trainingScenarioService.getTrainingScenario(tempScenariiFolder, f.getName()))
                                 .collect(Collectors.toList());
                 listScenarii.forEach(scenar -> scenarii.put(scenar.getLabel(), scenar));
-                LOGGER.debug("Init loading finished : {} loaded scenarii", scenarii.size());
+                log.debug("Init loading finished : {} loaded scenarii", scenarii.size());
 
         }
 
         @PreDestroy
         private void cleanup() {
                 boolean result = FileSystemUtils.deleteRecursively(tempFolder);
-                LOGGER.debug("Clean-up result : " + result);
+                log.debug("Clean-up result : {}", result);
         }
 
         private void rollBackOnFail(List<String> ids, HttpServletRequest request, Plateform plateform) {
-                LOGGER.warn("Roll back : DELETE following campaigns {}", ids);
+                log.warn("Roll back : DELETE following campaigns {}", ids);
                 ids.stream().forEach(id -> deleteCampaign(request, plateform, id));
         }
 
         private TrainingCourse prepareTrainingCourse(String campaign, String scenario, String campaignLabel,
                         String organisationUnitId,
-                        HttpServletRequest request, Long referenceDate, Plateform plateform, List<String> interviewers,
-                        ScenarioType type, TrainingScenario scenar, String scenarLabel) throws Exception {
+                        Long referenceDate, List<String> interviewers,
+                        ScenarioType type, String scenarLabel) throws Exception {
 
                 // 1 : dossier de traitement 'folder-'
                 File currentCampaignFolder = new File(tempScenariiFolder,
@@ -155,7 +155,7 @@ public class MassiveAttackService {
 
                 // 5 : change visibility with user OU only and
 
-                ArrayList<Visibility> visibilities = updatingVisibilities(referenceDate, organisationUnitId,
+                List<Visibility> visibilities = updatingVisibilities(referenceDate, organisationUnitId,
                                 pearlCampaign.getVisibilities());
 
                 pearlCampaign.setVisibilities(visibilities);
@@ -219,11 +219,10 @@ public class MassiveAttackService {
                         return assignement;
                 }).collect(Collectors.toList());
 
-                TrainingCourse trainingCourse = new TrainingCourse(distributedPearlSurveyUnits,
+                return new TrainingCourse(distributedPearlSurveyUnits,
                                 distributedQueenSurveyUnits, pearlCampaign, queenCampaign, newQuestionnaireModels,
                                 nomenclatures, assignements);
 
-                return trainingCourse;
         }
 
         private List<Assignement> generateDistributedAssignements(
@@ -248,11 +247,10 @@ public class MassiveAttackService {
                 List<fr.insee.sabianedata.ws.model.pearl.SurveyUnitDto> newSurveyUnits = new ArrayList<>();
 
                 if (type.equals(ScenarioType.INTERVIEWER)) {
-                        newSurveyUnits = interviewers.stream().map(in -> pearlSurveyUnits.stream().map(su -> {
+                        newSurveyUnits = interviewers.stream().map(in -> pearlSurveyUnits.stream().map(su ->
 
-                                return updatePearlSurveyUnit(su, in, pearlCampaign, campaign, organisationUnitId,
-                                                referenceDate);
-                        }).collect(Collectors.toList())
+                        updatePearlSurveyUnit(su, in, pearlCampaign, campaign, organisationUnitId,
+                                        referenceDate)).collect(Collectors.toList())
 
                         ).flatMap(Collection::stream).collect(Collectors.toList());
 
@@ -342,58 +340,56 @@ public class MassiveAttackService {
                 return newSurveyUnits;
         }
 
-        private ArrayList<Visibility> updatingVisibilities(Long referenceDate, String organisationUnitId,
+        private List<Visibility> updatingVisibilities(Long referenceDate, String organisationUnitId,
                         List<Visibility> previousVisibilities) {
 
-                List<Visibility> newVisibilities = previousVisibilities.stream()
+                return previousVisibilities.stream()
                                 .map(v -> new Visibility(v, referenceDate)).map(v -> {
                                         v.setOrganizationalUnit(organisationUnitId);
                                         return v;
                                 }).collect(Collectors.toList());
 
-                return new ArrayList<>(newVisibilities);
-
         }
 
-        public List<TrainingScenario> getTrainingScenariiTitles() throws Exception {
+        public List<TrainingScenario> getTrainingScenariiTitles() {
                 return new ArrayList<>(scenarii.values());
         }
 
-        public TrainingCourse postTrainingCourse(TrainingCourse tc, HttpServletRequest request, Long referenceDate,
-                        Plateform plateform, List<String> interviewers) {
+        public TrainingCourse postTrainingCourse(TrainingCourse tc, HttpServletRequest request,
+                        Plateform plateform) {
 
                 boolean pearlCampaignSuccess = false;
                 boolean pearlSurveyUnitSuccess = false;
                 boolean assignementSuccess = false;
 
-                LOGGER.info("Trying to post pearl campaign");
+                log.info("Trying to post pearl campaign");
                 try {
                         pearlApiService.postCampaignToApi(request, tc.getPearlCampaign(), plateform);
                         pearlCampaignSuccess = true;
                 } catch (Exception e) {
-                        LOGGER.error("Error during creation campaign :" + tc.getPearlCampaign().getCampaign());
-                        LOGGER.error(e.getMessage());
+                        log.error("Error during creation campaign : {}", tc.getPearlCampaign().getCampaign());
+                        log.error(e.getMessage());
                 }
-                LOGGER.info("Trying to post {}  pearl surveyUnits", tc.getPearlSurveyUnits().size());
+                log.info("Trying to post {}  pearl surveyUnits", tc.getPearlSurveyUnits().size());
                 try {
                         pearlApiService.postUesToApi(request, tc.getPearlSurveyUnits(), plateform);
                         pearlSurveyUnitSuccess = true;
                 } catch (Exception e) {
-                        LOGGER.error("Error during creation of surveyUnits");
-                        LOGGER.error(e.getMessage());
+                        log.error("Error during creation of surveyUnits");
+                        log.error(e.getMessage());
                 }
-                LOGGER.info("Trying to post " + tc.getAssignements().size() + " assignements");
+                log.info("Trying to post {} assignements", tc.getAssignements().size());
                 try {
                         pearlApiService.postAssignementsToApi(request, tc.getAssignements(), plateform);
                         assignementSuccess = true;
                 } catch (Exception e) {
-                        LOGGER.error("Error during creation of assignements");
-                        LOGGER.error(e.getMessage());
+                        log.error("Error during creation of assignements");
+                        log.error(e.getMessage());
                 }
                 boolean pearlSuccess = pearlCampaignSuccess && pearlSurveyUnitSuccess && assignementSuccess;
                 String pearlMessage = String.format("Campaign : %b, SurveyUnits: %b, Assignements: %b",
                                 pearlCampaignSuccess, pearlSurveyUnitSuccess, assignementSuccess);
-                LOGGER.info(pearlMessage);
+                log.info(pearlMessage);
 
                 // POST queen entities
                 long nomenclaturesSuccess;
@@ -401,46 +397,47 @@ public class MassiveAttackService {
                 long queenSurveyUnitsSuccess;
                 boolean queenCampaignSuccess = false;
 
-                LOGGER.info("Trying to post " + tc.getNomenclatures().size() + " nomenclatures");
+                log.info("Trying to post {} nomenclatures", tc.getNomenclatures().size());
                 nomenclaturesSuccess = tc.getNomenclatures().stream().parallel().filter(n -> {
                         try {
                                 queenApiService.postNomenclaturesToApi(request, n, plateform);
                                 return true;
                         } catch (Exception e) {
-                                LOGGER.error("Error during creation of nomenclature :" + n.getId());
-                                LOGGER.error(e.getMessage());
+                                log.error("Error during creation of nomenclature : {}", n.getId());
+                                log.error(e.getMessage());
                                 return false;
                         }
                 }).count();
 
-                LOGGER.info("Trying to post " + tc.getQuestionnaireModels().size() + " questionnaires");
+                log.info("Trying to post {} questionnaires", tc.getQuestionnaireModels().size());
                 questionnairesSuccess = tc.getQuestionnaireModels().stream().parallel().filter(q -> {
                         try {
                                 queenApiService.postQuestionnaireModelToApi(request, q, plateform);
                                 return true;
                         } catch (Exception e) {
-                                LOGGER.error("Error during creation of questionnaire :" + q.getIdQuestionnaireModel());
-                                LOGGER.error(e.getMessage());
+                                log.error("Error during creation of questionnaire : {}",
+                                                q.getIdQuestionnaireModel());
+                                log.error(e.getMessage());
                                 return false;
                         }
                 }).count();
 
-                LOGGER.info("Trying to post campaign");
+                log.info("Trying to post campaign");
                 try {
                         queenApiService.postCampaignToApi(request, tc.getQueenCampaign(), plateform);
                         queenCampaignSuccess = true;
                 } catch (Exception e) {
-                        LOGGER.error("Error during creation of campaignDto :" + tc.getQueenCampaign().getId());
-                        LOGGER.error(e.getMessage());
+                        log.error("Error during creation of campaignDto : {}", tc.getQueenCampaign().getId());
+                        log.error(e.getMessage());
                 }
-                LOGGER.info("Trying to post " + tc.getQueenSurveyUnits().size() + " queen survey-units");
+                log.info("Trying to post {} queen survey-units", tc.getQueenSurveyUnits().size());
                 queenSurveyUnitsSuccess = tc.getQueenSurveyUnits().stream().parallel().filter(su -> {
                         try {
                                 queenApiService.postUeToApi(request, su, tc.getQueenCampaign(), plateform);
                                 return true;
                         } catch (Exception e) {
-                                LOGGER.error("Error during creation of surveyUnit :" + su.getId());
-                                LOGGER.error(e.getMessage());
+                                log.error("Error during creation of surveyUnit : {}", su.getId());
+                                log.error(e.getMessage());
                                 return false;
                         }
                 }).count();
@@ -454,7 +451,7 @@ public class MassiveAttackService {
                                 tc.getQuestionnaireModels().size(), queenSurveyUnitsSuccess,
                                 tc.getQueenSurveyUnits().size(), queenCampaignSuccess);
 
-                LOGGER.info(queenMessage);
+                log.info(queenMessage);
 
                 return pearlSuccess && queenSuccess ? tc : null;
         }
@@ -478,24 +475,24 @@ public class MassiveAttackService {
                         try {
                                 return prepareTrainingCourse(camp.getCampaign(), scenarioId, camp.getCampaignLabel(),
                                                 organisationUnitId,
-                                                request, referenceDate, plateform, interviewers, scenar.getType(),
-                                                scenar, campaignLabel);
+                                                referenceDate, interviewers, scenar.getType(),
+                                                campaignLabel);
                         } catch (Exception e1) {
-                                LOGGER.error("coudn't create training course " + camp.getCampaign(), e1);
+                                log.error("coudn't create training course " + camp.getCampaign(), e1);
                                 e1.printStackTrace();
                                 return null;
                         }
                 }).collect(Collectors.toList());
 
                 if (trainingCourses.contains(null)) {
-                        rollBackOnFail(trainingCourses.stream().filter(tc -> tc != null).map(tc -> tc.getCampaignId())
+                        rollBackOnFail(trainingCourses.stream().filter(Objects::nonNull).map(tc -> tc.getCampaignId())
                                         .collect(Collectors.toList()), request, plateform);
                         return new ResponseModel(false, "Error when loading campaigns");
                 }
 
                 boolean success = trainingCourses.stream()
-                                .map(tc -> postTrainingCourse(tc, request, referenceDate, plateform, interviewers))
-                                .filter(tc -> tc == null).collect(Collectors.toList()).size() == 0;
+                                .map(tc -> postTrainingCourse(tc, request, plateform))
+                                .filter(Objects::isNull).collect(Collectors.toList()).isEmpty();
 
                 if (!success) {
                         rollBackOnFail(trainingCourses.stream().map(tc -> tc.getCampaignId())
@@ -518,21 +515,21 @@ public class MassiveAttackService {
                         try {
                                 ResponseEntity<?> postResponse = pearlApiService.postInterviewersToApi(request,
                                                 interviewerList, plateform);
-                                LOGGER.info("Interviewer " + inter + " created.");
+                                log.info("Interviewer {} created", inter);
                                 return postResponse;
                         } catch (JsonProcessingException e) {
-                                LOGGER.warn("Error when creating interviewer " + inter);
-                                LOGGER.error(e.getMessage());
+                                log.warn("Error when creating interviewer {}", inter);
+                                log.error(e.getMessage());
                                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                         } catch (RestClientException e) {
-                                LOGGER.info("Interviewer " + inter + " already present.");
-                                LOGGER.debug(e.getMessage());
+                                log.info("Interviewer {} already present.", inter);
+                                log.debug(e.getMessage());
 
                                 return new ResponseEntity<>(HttpStatus.OK);
                         }
 
                 }).filter(response -> !response.getStatusCode().is2xxSuccessful()).collect(Collectors.toList())
-                                .size() == 0;
+                                .isEmpty();
 
         }
 
@@ -540,7 +537,7 @@ public class MassiveAttackService {
 
                 OrganisationUnitDto ou = pearlApiService.getUserOrganizationUnit(request, plateform);
                 if (ou == null) {
-                        LOGGER.warn("Can't get organizationUnit of caller");
+                        log.warn("Can't get organizationUnit of caller");
                         return false;
                 }
 
@@ -554,34 +551,34 @@ public class MassiveAttackService {
                         try {
                                 ResponseEntity<?> postResponse = pearlApiService.postUsersToApi(request, userList,
                                                 ou.getId(), plateform);
-                                LOGGER.info("User " + user + " created.");
+                                log.info("User {} created", user);
                                 return postResponse;
                         } catch (JsonProcessingException e) {
-                                LOGGER.warn("Error when creating user " + user);
-                                LOGGER.error(e.getMessage());
+                                log.warn("Error when creating user {}", user);
+                                log.error(e.getMessage());
                                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                         } catch (RestClientException e) {
-                                LOGGER.info("User " + user + " already present.");
-                                LOGGER.debug(e.getMessage());
+                                log.info("User {} already present", user);
+                                log.debug(e.getMessage());
 
                                 return new ResponseEntity<>(HttpStatus.OK);
                         }
 
                 }).filter(response -> !response.getStatusCode().is2xxSuccessful()).collect(Collectors.toList())
-                                .size() == 0;
+                                .isEmpty();
 
         }
 
         public ResponseEntity<String> deleteCampaign(HttpServletRequest request, Plateform plateform, String id) {
                 List<Campaign> pearlCampaigns = pearlApiService.getCampaigns(request, plateform, true);
                 if (pearlCampaigns.stream().filter(camp -> camp.getId().equals(id)).count() == 0) {
-                        LOGGER.error("DELETE campaign with id {} resulting in 404 because it does not exists", id);
+                        log.error("DELETE campaign with id {} resulting in 404 because it does not exists", id);
                         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
                 ResponseEntity<String> pearlResponse = pearlApiService.deleteCampaign(request, plateform, id);
                 ResponseEntity<String> queenResponse = queenApiService.deleteCampaign(request, plateform, id);
-                LOGGER.info("DELETE campaign with id {} : pearl={} / queen={}", id,
-                                pearlResponse.getStatusCode().toString(), queenResponse.getStatusCode().toString());
+                log.info("DELETE campaign with id {} : pearl={} / queen={}", id,
+                                pearlResponse.getStatusCode(), queenResponse.getStatusCode());
                 return ResponseEntity.ok().build();
 
         }

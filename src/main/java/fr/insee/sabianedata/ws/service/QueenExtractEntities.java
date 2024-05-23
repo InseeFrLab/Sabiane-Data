@@ -2,6 +2,7 @@ package fr.insee.sabianedata.ws.service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,6 @@ public class QueenExtractEntities {
     }
 
     public List<SurveyUnitDto> getQueenSurveyUnitsFromFods(File fods, String folder) throws Exception {
-        ArrayList<SurveyUnitDto> lists = new ArrayList<>();
         File file = queenTransformService.getQueenSurveyUnits(fods);
         XmlMapper xmlMapper = new XmlMapper();
         SurveyUnits surveyUnits = xmlMapper.readValue(file, SurveyUnits.class);
@@ -47,7 +47,7 @@ public class QueenExtractEntities {
             suDto.extractJsonFromFiles(folder);
             return suDto;
         }).collect(Collectors.toList());
-        return surveyUnitsList != null ? surveyUnitsList : lists;
+        return surveyUnitsList != null ? surveyUnitsList : Collections.emptyList();
     }
 
     public List<QuestionnaireModel> getQueenQuestionnaireModelsFromFods(File fods, String folder) throws Exception {
@@ -63,12 +63,11 @@ public class QueenExtractEntities {
     public List<QuestionnaireModelDto> getQueenQuestionnaireModelsDtoFromFods(File fods, String folder)
             throws Exception {
         List<QuestionnaireModel> questionnaireModels = getQueenQuestionnaireModelsFromFods(fods, folder);
-        List<QuestionnaireModelDto> questionnaireModelDtoList = questionnaireModels.stream()
+        return questionnaireModels.stream()
                 .map(q -> new QuestionnaireModelDto(q, folder)).collect(Collectors.toList());
-        return questionnaireModelDtoList;
     }
 
-    public List<Nomenclature> getQueenNomenclatureFromFods(File fods, String folder) throws Exception {
+    public List<Nomenclature> getQueenNomenclatureFromFods(File fods) throws Exception {
         ArrayList<Nomenclature> lists = new ArrayList<>();
         File file = queenTransformService.getQueenNomenclatures(fods);
         XmlMapper xmlMapper = new XmlMapper();
@@ -78,10 +77,9 @@ public class QueenExtractEntities {
     }
 
     public List<NomenclatureDto> getQueenNomenclaturesDtoFromFods(File fods, String folder) throws Exception {
-        List<Nomenclature> nomenclatures = getQueenNomenclatureFromFods(fods, folder);
-        List<NomenclatureDto> nomenclatureDtos = nomenclatures.stream().map(n -> new NomenclatureDto(n, folder))
+        List<Nomenclature> nomenclatures = getQueenNomenclatureFromFods(fods);
+        return nomenclatures.stream().map(n -> new NomenclatureDto(n, folder))
                 .collect(Collectors.toList());
-        return nomenclatureDtos;
     }
 
 }
