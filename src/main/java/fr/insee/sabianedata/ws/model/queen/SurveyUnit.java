@@ -15,8 +15,8 @@ public class SurveyUnit {
     @JacksonXmlProperty(localName = "QuestionnaireId")
     private String QuestionnaireId;
 
-    @JacksonXmlProperty(localName = "StateData")
-    private StateData stateData;
+    @JacksonXmlProperty(localName = "StateDataFile")
+    private String stateDataFile;
 
     @JacksonXmlProperty(localName = "PersonalizationFile")
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -46,12 +46,12 @@ public class SurveyUnit {
         QuestionnaireId = questionnaireId;
     }
 
-    public StateData getStateData() {
-        return stateData;
+    public String getStateDataFile() {
+        return stateDataFile;
     }
 
-    public void setStateData(StateData stateData) {
-        this.stateData = stateData;
+    public void setStateDataFile(String stateDataFile) {
+        this.stateDataFile = stateDataFile;
     }
 
     public String getPersonalizationFile() {
@@ -78,24 +78,24 @@ public class SurveyUnit {
         this.commentFile = commentFile;
     }
 
-    public SurveyUnit(String id, String questionnaireId, StateData stateData) {
+    public SurveyUnit(String id, String questionnaireId, String stateDataFile) {
         this.id = id;
         this.QuestionnaireId = questionnaireId;
-        this.stateData = stateData;
+        this.stateDataFile = stateDataFile;
     }
 
-    public SurveyUnit(String id, String questionnaireId, StateData stateData, String dataFile, String commentFile,
+    public SurveyUnit(String id, String questionnaireId, String stateDataFile, String dataFile, String commentFile,
             String personalizationFile) {
         this.id = id;
         this.QuestionnaireId = questionnaireId;
-        this.stateData = stateData;
+        this.stateDataFile = stateDataFile;
         this.dataFile = dataFile;
         this.commentFile = commentFile;
         this.personalizationFile = personalizationFile;
     }
 
     public SurveyUnit(SurveyUnit su) {
-        this(su.getId(), su.getQuestionnaireId(), su.getStateData(), su.getDataFile(), su.getCommentFile(),
+        this(su.getId(), su.getQuestionnaireId(), su.getStateDataFile(), su.getDataFile(), su.getCommentFile(),
                 su.getPersonalizationFile());
     }
 
