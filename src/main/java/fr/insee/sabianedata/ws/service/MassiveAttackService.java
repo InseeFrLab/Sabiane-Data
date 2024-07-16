@@ -46,7 +46,6 @@ import fr.insee.sabianedata.ws.model.pearl.SurveyUnitStateDto;
 import fr.insee.sabianedata.ws.model.pearl.UserDto;
 import fr.insee.sabianedata.ws.model.pearl.Visibility;
 import fr.insee.sabianedata.ws.model.queen.CampaignDto;
-import fr.insee.sabianedata.ws.model.queen.MetadataDto;
 import fr.insee.sabianedata.ws.model.queen.NomenclatureDto;
 import fr.insee.sabianedata.ws.model.queen.QuestionnaireModelDto;
 import fr.insee.sabianedata.ws.model.queen.SurveyUnit;
@@ -509,7 +508,8 @@ public class MassiveAttackService {
                 validInterviewer.setFirstName("FirstName");
                 validInterviewer.setLastName("LastName");
                 validInterviewer.setEmail("firstname.lastname@valid.net");
-                validInterviewer.setPhoneNumer("+33000000000");
+                validInterviewer.setPhoneNumber("+33000000000");
+                validInterviewer.setTitle("MISTER");
                 return interviewers.stream().map(inter -> {
                         validInterviewer.setId(inter);
                         try {

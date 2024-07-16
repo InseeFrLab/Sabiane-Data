@@ -1,6 +1,7 @@
 package fr.insee.sabianedata.ws.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,10 +26,15 @@ import fr.insee.sabianedata.ws.model.queen.SurveyUnits;
 public class QueenExtractEntities {
 
     @Autowired
-    QueenTransformService queenTransformService;
+    QueenTransformService queenTransformService = null;
 
-    public CampaignDto getQueenCampaignFromXMLFile(File file) throws Exception {
-        XmlMapper xmlMapper = new XmlMapper();
+    private final XmlMapper xmlMapper;
+
+    public QueenExtractEntities() {
+        this.xmlMapper = new XmlMapper();
+    }
+
+    public CampaignDto getQueenCampaignFromXMLFile(File file) throws IOException {
         CampaignDto campaign = xmlMapper.readValue(file, CampaignDto.class);
         return campaign;
     }
@@ -40,7 +46,6 @@ public class QueenExtractEntities {
 
     public List<SurveyUnitDto> getQueenSurveyUnitsFromFods(File fods, String folder) throws Exception {
         File file = queenTransformService.getQueenSurveyUnits(fods);
-        XmlMapper xmlMapper = new XmlMapper();
         SurveyUnits surveyUnits = xmlMapper.readValue(file, SurveyUnits.class);
         List<SurveyUnitDto> surveyUnitsList = surveyUnits.getSurveyUnits().stream().map(s -> {
             SurveyUnitDto suDto = new SurveyUnitDto(s);
@@ -50,10 +55,10 @@ public class QueenExtractEntities {
         return surveyUnitsList != null ? surveyUnitsList : Collections.emptyList();
     }
 
+    // TODO : remove unused parameter
     public List<QuestionnaireModel> getQueenQuestionnaireModelsFromFods(File fods, String folder) throws Exception {
         ArrayList<QuestionnaireModel> lists = new ArrayList<>();
         File file = queenTransformService.getQueenQuestionnaires(fods);
-        XmlMapper xmlMapper = new XmlMapper();
         QuestionnaireModels questionnaireModels = xmlMapper.readValue(file, QuestionnaireModels.class);
         return questionnaireModels != null && questionnaireModels.getQuestionnaireModels() != null
                 ? questionnaireModels.getQuestionnaireModels()
@@ -70,7 +75,6 @@ public class QueenExtractEntities {
     public List<Nomenclature> getQueenNomenclatureFromFods(File fods) throws Exception {
         ArrayList<Nomenclature> lists = new ArrayList<>();
         File file = queenTransformService.getQueenNomenclatures(fods);
-        XmlMapper xmlMapper = new XmlMapper();
         Nomenclatures nomenclatures = xmlMapper.readValue(file, Nomenclatures.class);
         return nomenclatures != null && nomenclatures.getNomenclatures() != null ? nomenclatures.getNomenclatures()
                 : lists;

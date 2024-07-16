@@ -5,10 +5,15 @@ import java.util.Date;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import fr.insee.sabianedata.ws.utils.JsonFileToJsonNode;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class SurveyUnitDto extends SurveyUnit {
 
     public static final String FOLDER = "surveyUnits";
@@ -77,7 +82,7 @@ public class SurveyUnitDto extends SurveyUnit {
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode rootNode = objectMapper.createObjectNode();
-        rootNode.put("state", "INIT");
+        rootNode.set("state", JsonNodeFactory.instance.nullNode());
         rootNode.put("date", new Date().getTime());
         rootNode.put("currentPage", "1");
         return rootNode;

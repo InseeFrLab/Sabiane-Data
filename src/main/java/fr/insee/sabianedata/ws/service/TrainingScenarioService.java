@@ -22,7 +22,7 @@ import fr.insee.sabianedata.ws.model.pearl.CampaignDto;
 @Service
 public class TrainingScenarioService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MassiveAttackService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrainingScenarioService.class);
 
     @Autowired
     PearlExtractEntities pearlExtractEntities;
@@ -39,13 +39,13 @@ public class TrainingScenarioService {
 
             TrainingScenario ts = objectMapper.readValue(infoFile, TrainingScenario.class);
 
-            List<CampaignDto> campaigns = Arrays.stream(scenarioDirectory.listFiles()).filter(f -> f.isDirectory())
+            List<CampaignDto> campaigns = Arrays.stream(scenarioDirectory.listFiles()).filter(File::isDirectory)
                     .map(f -> {
                         try {
                             return pearlExtractEntities
                                     .getPearlCampaignFromFods(new File(f, "pearl/pearl_campaign.fods"));
                         } catch (Exception e) {
-                            LOGGER.warn("Error when extracting campaign from " + f.getAbsolutePath());
+                            LOGGER.warn("Error when extracting campaign from {} ", f.getAbsolutePath());
                             LOGGER.warn(e.getMessage());
                             return null;
                         }
@@ -58,7 +58,7 @@ public class TrainingScenarioService {
             return ts;
 
         } catch (Exception e) {
-            LOGGER.warn("Error when getting scenario " + tsId);
+            LOGGER.warn("Error when getting scenario {}", tsId);
             LOGGER.warn(e.getMessage());
             return null;
         }
@@ -73,19 +73,15 @@ public class TrainingScenarioService {
             TrainingScenario ts = objectMapper.readValue(infoFile, TrainingScenario.class);
             return ts.getType();
         } catch (Exception e) {
-            LOGGER.warn("Error when getting scenario type " + tsId);
+            LOGGER.warn("Error when getting scenario type {}", tsId);
             LOGGER.warn(e.getMessage());
             return null;
         }
     }
 
-    public List<TrainingScenario> getTrainingScenarii(File scenariiFolder) throws Exception {
-        try {
-            Stream<File> folders = Arrays.stream(scenariiFolder.listFiles());
-            return folders.map(f -> getTrainingScenario(scenariiFolder, f.getName())).collect(Collectors.toList());
-        } catch (IllegalArgumentException e) {
-            throw new Exception("Can't get training scenarii - " + e.getMessage());
-        }
+    public List<TrainingScenario> getTrainingScenarii(File scenariiFolder) {
+        Stream<File> folders = Arrays.stream(scenariiFolder.listFiles());
+        return folders.map(f -> getTrainingScenario(scenariiFolder, f.getName())).collect(Collectors.toList());
     }
 
 }
