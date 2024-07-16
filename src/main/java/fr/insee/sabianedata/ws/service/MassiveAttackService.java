@@ -90,9 +90,9 @@ public class MassiveAttackService {
                 try {
                         tempFolder = Files.createTempDirectory("folder-").toFile();
                         tempScenariiFolder = new File(tempFolder, "scenarii");
-                        File scenarii = resourceLoader.getResource("classpath:scenarii").getFile();
+                        File scenariiFolder = resourceLoader.getResource("classpath:scenarii").getFile();
                         tempScenariiFolder.mkdirs();
-                        FileUtils.copyDirectory(scenarii, tempScenariiFolder);
+                        FileUtils.copyDirectory(scenariiFolder, tempScenariiFolder);
                 } catch (IOException e) {
                         e.printStackTrace();
                 }
@@ -120,7 +120,7 @@ public class MassiveAttackService {
         private TrainingCourse prepareTrainingCourse(String campaign, String scenario, String campaignLabel,
                         String organisationUnitId,
                         HttpServletRequest request, Long referenceDate, Plateform plateform, List<String> interviewers,
-                        ScenarioType type, TrainingScenario scenar) throws Exception {
+                        ScenarioType type, TrainingScenario scenar, String scenarLabel) throws Exception {
 
                 // 1 : dossier de traitement 'folder-'
                 File currentCampaignFolder = new File(tempScenariiFolder,
@@ -147,9 +147,9 @@ public class MassiveAttackService {
                                 .getPearlSurveyUnitsFromFods(pearlFodsInput);
                 List<Assignement> assignements = pearlExtractEntities.getAssignementsFromFods(pearlFodsInput);
 
-                // 4 : make campaignId uniq => {campaign.id}_{OU}{date}
+                // 4 : make campaignId uniq => {campaign.id}_{I/M}_{OU}_{date}_{scenarLabel}
                 String newCampaignId = String.join("_", pearlCampaign.getCampaign(), type.toString().substring(0, 1),
-                                organisationUnitId, referenceDate.toString());
+                                organisationUnitId, referenceDate.toString(), scenarLabel);
 
                 pearlCampaign.setCampaign(newCampaignId);
                 pearlCampaign.setCampaignLabel(campaignLabel);
@@ -170,13 +170,12 @@ public class MassiveAttackService {
 
                 // 7 Queen : make uniq campaignId and questionnaireId
                 String newQueenCampaignId = String.join("_", queenCampaign.getId(), type.toString().substring(0, 1),
-                                organisationUnitId, referenceDate.toString());
+                                organisationUnitId, referenceDate.toString(), scenarLabel);
                 queenCampaign.setId(newQueenCampaignId);
                 queenCampaign.setLabel(campaignLabel);
 
                 // map oldQuestId to new questModels
                 HashMap<String, String> questionnaireIdMapping = new HashMap<>();
-
                 List<QuestionnaireModelDto> newQuestionnaireModels = questionnaireModels.stream().map(qm -> {
                         String newQuestionnaireModelId = String.join("_", qm.getIdQuestionnaireModel(),
                                         organisationUnitId, referenceDate.toString());
@@ -314,7 +313,7 @@ public class MassiveAttackService {
 
                 String newId = String.join("_", initialSurveyUnit.getId(), campaign, interviewer,
                                 referenceDate.toString());
-                SurveyUnit newSu = new SurveyUnit(newId, newQuestionnaireId, initialSurveyUnit.getStateData());
+                SurveyUnit newSu = new SurveyUnit(newId, newQuestionnaireId, initialSurveyUnit.getStateDataFile());
                 SurveyUnitDto newSuDto = new SurveyUnitDto(initialSurveyUnit, newSu);
                 return newSuDto;
 
@@ -353,7 +352,7 @@ public class MassiveAttackService {
                                         return v;
                                 }).collect(Collectors.toList());
 
-                return new ArrayList<Visibility>(newVisibilities);
+                return new ArrayList<>(newVisibilities);
 
         }
 
@@ -376,14 +375,7 @@ public class MassiveAttackService {
                         LOGGER.error("Error during creation campaign :" + tc.getPearlCampaign().getCampaign());
                         LOGGER.error(e.getMessage());
                 }
-                LOGGER.info("Trying to post " + tc.getPearlSurveyUnits().size() + " pearl surveyUnits");
-                tc.getPearlSurveyUnits().stream().parallel().forEach(su -> {
-                        Identification ident = su.getIdentification();
-                        LOGGER.info(su.getId() + " - " +
-                                        ident == null ? "ident is null"
-                                                        : (ident.getIdentification() + ident.getAccess()
-                                                                        + ident.getSituation()));
-                });
+                LOGGER.info("Trying to post {}  pearl surveyUnits", tc.getPearlSurveyUnits().size());
                 try {
                         pearlApiService.postUesToApi(request, tc.getPearlSurveyUnits(), plateform);
                         pearlSurveyUnitSuccess = true;
@@ -472,7 +464,7 @@ public class MassiveAttackService {
                         String organisationUnitId,
                         HttpServletRequest request, Long referenceDate, Plateform plateform,
                         List<String> interviewers) {
-
+                // TODO: use MAP SCENARIOS
                 ScenarioType type = trainingScenarioService.getScenarioType(tempScenariiFolder, scenarioId);
                 if (type == ScenarioType.INTERVIEWER && !checkInterviewers(interviewers, request, plateform)) {
                         return new ResponseModel(false, "Error when checking interviewers");
@@ -480,7 +472,7 @@ public class MassiveAttackService {
                 if (type == ScenarioType.MANAGER && !checkUsers(interviewers, request, plateform)) {
                         return new ResponseModel(false, "Error when checking users");
                 }
-
+                // TODO MAP
                 TrainingScenario scenar = trainingScenarioService.getTrainingScenario(tempScenariiFolder, scenarioId);
 
                 List<TrainingCourse> trainingCourses = scenar.getCampaigns().stream().map(camp -> {
@@ -488,7 +480,7 @@ public class MassiveAttackService {
                                 return prepareTrainingCourse(camp.getCampaign(), scenarioId, camp.getCampaignLabel(),
                                                 organisationUnitId,
                                                 request, referenceDate, plateform, interviewers, scenar.getType(),
-                                                scenar);
+                                                scenar, campaignLabel);
                         } catch (Exception e1) {
                                 LOGGER.error("coudn't create training course " + camp.getCampaign(), e1);
                                 e1.printStackTrace();

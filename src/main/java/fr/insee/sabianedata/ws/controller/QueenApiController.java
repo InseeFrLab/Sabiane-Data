@@ -67,7 +67,7 @@ public class QueenApiController {
         su.setCommentFile("{}");
         su.setPersonalizationFile("{}");
         su.setQuestionnaireId(questionnaireId);
-        su.setStateData(new StateData());
+        su.setStateDataFile("{}");
         su.setDataFile("{}");
 
         IntStream.range(index, occurrences + index).parallel().forEach(q -> {
