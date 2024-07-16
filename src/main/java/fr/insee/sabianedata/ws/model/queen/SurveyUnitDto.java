@@ -1,12 +1,8 @@
 package fr.insee.sabianedata.ws.model.queen;
 
 import java.io.File;
-import java.util.Date;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import fr.insee.sabianedata.ws.utils.JsonFileToJsonNode;
 import lombok.Getter;
@@ -65,59 +61,16 @@ public class SurveyUnitDto extends SurveyUnit {
         setCommentFile(null);
         setPersonalizationFile(null);
         setStateDataFile(null);
-
     }
 
     private void populateStateData(String finalFolder) {
         String sdf = getStateDataFile();
         if (sdf == null || sdf.isEmpty()) {
-            setStateData(generateStateData());
+            setStateData(null);
         } else {
             File stateDataFile = new File(finalFolder + File.separator + getStateDataFile());
             setStateData(JsonFileToJsonNode.getJsonNodeFromFile(stateDataFile));
         }
-    }
-
-    public JsonNode generateStateData() {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode rootNode = objectMapper.createObjectNode();
-        rootNode.set("state", JsonNodeFactory.instance.nullNode());
-        rootNode.put("date", new Date().getTime());
-        rootNode.put("currentPage", "1");
-        return rootNode;
-    }
-
-    public JsonNode getData() {
-        return data;
-    }
-
-    public void setData(JsonNode data) {
-        this.data = data;
-    }
-
-    public JsonNode getComment() {
-        return comment;
-    }
-
-    public void setComment(JsonNode comment) {
-        this.comment = comment;
-    }
-
-    public JsonNode getPersonalization() {
-        return personalization;
-    }
-
-    public void setPersonalization(JsonNode personalization) {
-        this.personalization = personalization;
-    }
-
-    public JsonNode getStateData() {
-        return stateData;
-    }
-
-    public void setStateData(JsonNode stateData) {
-        this.stateData = stateData;
     }
 
 }

@@ -3,7 +3,14 @@ package fr.insee.sabianedata.ws.model.queen;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @JacksonXmlRootElement(localName = "StateData")
+@NoArgsConstructor
+@Getter
+@Setter
 public class StateData {
 
     @JacksonXmlProperty(localName = "State")
@@ -15,30 +22,4 @@ public class StateData {
     @JacksonXmlProperty(localName = "CurrentPage")
     private String currentPage;
 
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public Long getDate() {
-        return date;
-    }
-
-    public void setDate(Long date) {
-        this.date = date;
-    }
-
-    public String getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(String currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public StateData() {
-    }
 }

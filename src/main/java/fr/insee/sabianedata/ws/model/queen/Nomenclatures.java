@@ -4,23 +4,20 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.List;
 
 @JacksonXmlRootElement(localName = "Nomenclatures")
+@NoArgsConstructor
+@Getter
+@Setter
 public class Nomenclatures {
 
     @JacksonXmlProperty(localName = "Nomenclature")
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<Nomenclature> nomenclatures;
 
-    public Nomenclatures() {
-    }
-
-    public List<Nomenclature> getNomenclatures() {
-        return nomenclatures;
-    }
-
-    public void setNomenclatures(List<Nomenclature> nomenclatures) {
-        this.nomenclatures = nomenclatures;
-    }
 }

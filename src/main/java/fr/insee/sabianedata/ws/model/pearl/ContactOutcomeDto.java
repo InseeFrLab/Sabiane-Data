@@ -4,8 +4,10 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import fr.insee.sabianedata.ws.utils.DateParser;
+import lombok.NoArgsConstructor;
 
 @JacksonXmlRootElement(localName = "ContactOutcome")
+@NoArgsConstructor
 public class ContactOutcomeDto {
 
     @JacksonXmlProperty(localName = "Value")
@@ -17,9 +19,6 @@ public class ContactOutcomeDto {
 
     private Long date;
     private int totalNumberOfContactAttempts;
-
-    public ContactOutcomeDto() {
-    }
 
     public ContactOutcomeDto(ContactOutcomeDto co, Long reference) throws IllegalArgumentException {
         this.type = co.getType();
