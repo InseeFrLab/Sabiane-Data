@@ -146,6 +146,7 @@ public class MassiveAttackService {
                 List<Assignement> assignements = pearlExtractEntities.getAssignementsFromFods(pearlFodsInput);
 
                 // 4 : make campaignId uniq => {campaign.id}_{I/M}_{OU}_{date}_{scenarLabel}
+          
                 String newCampaignId = String.join("_", pearlCampaign.getCampaign(), type.toString().substring(0, 1),
                                 organisationUnitId, referenceDate.toString(), scenarLabel);
 
@@ -369,7 +370,9 @@ public class MassiveAttackService {
                         log.error("Error during creation campaign : {}", tc.getPearlCampaign().getCampaign());
                         log.error(e.getMessage());
                 }
+          
                 log.info("Trying to post {}  pearl surveyUnits", tc.getPearlSurveyUnits().size());
+          
                 try {
                         pearlApiService.postUesToApi(request, tc.getPearlSurveyUnits(), plateform);
                         pearlSurveyUnitSuccess = true;
@@ -454,12 +457,13 @@ public class MassiveAttackService {
 
                 return pearlSuccess && queenSuccess ? tc : null;
         }
-
         public ResponseModel generateTrainingScenario(String scenarioId, String campaignLabel,
                         String organisationUnitId,
                         HttpServletRequest request, Long referenceDate, Plateform plateform,
                         List<String> interviewers) {
+          
                 // TODO: use MAP SCENARIOS
+
                 ScenarioType type = trainingScenarioService.getScenarioType(tempScenariiFolder, scenarioId);
                 if (type == ScenarioType.INTERVIEWER && !checkInterviewers(interviewers, request, plateform)) {
                         return new ResponseModel(false, "Error when checking interviewers");
@@ -467,7 +471,9 @@ public class MassiveAttackService {
                 if (type == ScenarioType.MANAGER && !checkUsers(interviewers, request, plateform)) {
                         return new ResponseModel(false, "Error when checking users");
                 }
+          
                 // TODO MAP
+          
                 TrainingScenario scenar = trainingScenarioService.getTrainingScenario(tempScenariiFolder, scenarioId);
 
                 List<TrainingCourse> trainingCourses = scenar.getCampaigns().stream().map(camp -> {
@@ -476,6 +482,7 @@ public class MassiveAttackService {
                                                 organisationUnitId,
                                                 referenceDate, interviewers, scenar.getType(),
                                                 campaignLabel);
+                          
                         } catch (Exception e1) {
                                 log.error("coudn't create training course " + camp.getCampaign(), e1);
                                 e1.printStackTrace();
