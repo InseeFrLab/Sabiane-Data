@@ -16,11 +16,18 @@ import java.util.regex.Pattern;
  */
 public class DateParser {
 
-    private static final String dmyDateFormat = "dd/MM/yyyy HH:mm:ss";
-    private static final String dmyRegexp = "^\\d{2}\\/\\d{2}\\/\\d{4} \\d{2}:\\d{2}:\\d{2}$";
-    private static final String relativeDateRegexp = "^J(?<operator>[\\+\\-])(?<value>[0-9]+$)";
-    private static final Pattern dmyPattern = Pattern.compile(dmyRegexp);
-    private static final Pattern relativeDatePattern = Pattern.compile(relativeDateRegexp);
+    private DateParser() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
+
+    private static final String DMY_DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
+    private static final String DMY_REGEXP = "^\\d{2}\\/\\d{2}\\/\\d{4} \\d{2}:\\d{2}:\\d{2}$";
+    private static final String RELATIVE_DATE_PATTERN = "^J(?<operator>[\\+\\-])(?<value>\\d+$)";
+    private static final Pattern dmyPattern = Pattern.compile(DMY_REGEXP);
+    private static final Pattern relativeDatePattern = Pattern.compile(RELATIVE_DATE_PATTERN);
+
+    private static final String PATTERN_ERROR_MESSAGE = String.format(" is not parsable, right pattern is : %s",
+            DMY_REGEXP);
 
     /**
      * 
@@ -34,9 +41,7 @@ public class DateParser {
             return relativeDateParse(input, new Date().getTime());
         }
         if (!isDmyParsable(input))
-            throw new IllegalArgumentException(input + " is not parsable, right pattern is : " + dmyRegexp);
-        // throw new ParseException(input + " is not parsable, right pattern is : " +
-        // dmyRegexp);
+            throw new IllegalArgumentException(input + PATTERN_ERROR_MESSAGE);
         return stringToLong(input);
     }
 
@@ -52,7 +57,7 @@ public class DateParser {
      */
     public static Long relativeDateParse(String input, Long reference) throws IllegalArgumentException {
         if (!isRelativeDateParsable(input))
-            throw new IllegalArgumentException(input + " is not parsable, right pattern is : J([+-])([0-9]+)");
+            throw new IllegalArgumentException(input + " is not parsable, right pattern is : J([+-])(//d+)");
         return updateDays(input, longToLdt(reference));
     }
 
@@ -93,14 +98,14 @@ public class DateParser {
 
     public static Long stringToLong(String input) throws IllegalArgumentException {
         if (!isDmyParsable(input))
-            throw new IllegalArgumentException(input + " is not parsable, right pattern is : " + dmyRegexp);
-        return ldtToLong(stringToLdt(input, dmyDateFormat));
+            throw new IllegalArgumentException(input + PATTERN_ERROR_MESSAGE);
+        return ldtToLong(stringToLdt(input, DMY_DATE_FORMAT));
 
     }
 
     public static LocalDateTime stringToLdt(String input, String dateFormat) throws IllegalArgumentException {
         if (!isDmyParsable(input))
-            throw new IllegalArgumentException(input + " is not parsable, right pattern is : " + dmyRegexp);
+            throw new IllegalArgumentException(input + PATTERN_ERROR_MESSAGE);
         return LocalDateTime.from(formatterFromPattern(dateFormat).parse(input));
     }
 
@@ -117,7 +122,7 @@ public class DateParser {
     }
 
     public static String ldtToString(LocalDateTime input) {
-        return input.format(formatterFromPattern(dmyDateFormat));
+        return input.format(formatterFromPattern(DMY_DATE_FORMAT));
     }
 
     private static DateTimeFormatter formatterFromPattern(String regexp) {

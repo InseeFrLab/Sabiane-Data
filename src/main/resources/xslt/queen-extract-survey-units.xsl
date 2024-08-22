@@ -27,11 +27,7 @@
                         <PersonalizationFile><xsl:value-of select="tools:getColumn($row,3)"/></PersonalizationFile>
                         <DataFile><xsl:value-of select="tools:getColumn($row,4)"/></DataFile>
                         <CommentFile><xsl:value-of select="tools:getColumn($row,5)"/></CommentFile>
-                        <StateData>
-                            <State/>
-                            <Date/>
-                            <CurrentPage/>
-                        </StateData>
+                        <StateDataFile><xsl:value-of select="tools:getColumn($row,6)"/></StateDataFile>
                     </SurveyUnit>
                 </xsl:if>
             </xsl:for-each>
