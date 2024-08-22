@@ -4224,7 +4224,7 @@
      <table:table-cell table:style-name="ce9" table:number-columns-repeated="2"/>
      <table:table-cell table:style-name="ce11"/>
      <table:table-cell table:style-name="ce11" office:value-type="string" calcext:value-type="string">
-      <text:p>ACP</text:p>
+      <text:p>INA</text:p>
      </table:table-cell>
      <table:table-cell table:style-name="ce11" office:value-type="float" office:value="2" calcext:value-type="float">
       <text:p>2</text:p>
@@ -5069,7 +5069,7 @@
      <table:table-cell table:style-name="ce9" table:number-columns-repeated="2"/>
      <table:table-cell table:style-name="ce11"/>
      <table:table-cell table:style-name="ce11" office:value-type="string" calcext:value-type="string">
-      <text:p>ACP</text:p>
+      <text:p>INA</text:p>
      </table:table-cell>
      <table:table-cell table:style-name="ce11" office:value-type="float" office:value="2" calcext:value-type="float">
       <text:p>2</text:p>
