@@ -53,7 +53,7 @@ public class AppWS extends SpringBootServletInitializer {
                         || prop.startsWith("keycloak"))
                 .sorted().forEach(prop -> LOGGER.info("{}: {}", prop, env.getProperty(prop)));
         LOGGER.info("===========================================================================");
-        LOGGER.info("Available CPU : " + Runtime.getRuntime().availableProcessors());
+        LOGGER.info("Available CPU : {}", Runtime.getRuntime().availableProcessors());
         LOGGER.info(String.format("Max memory : %.2f GB", Runtime.getRuntime().maxMemory() / 1e9d));
         LOGGER.info("===========================================================================");
     }

@@ -6,13 +6,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import fr.insee.sabianedata.ws.model.massiveAttack.ScenarioType;
@@ -20,15 +18,11 @@ import fr.insee.sabianedata.ws.model.massiveAttack.TrainingScenario;
 import fr.insee.sabianedata.ws.model.pearl.CampaignDto;
 
 @Service
+@Slf4j
 public class TrainingScenarioService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TrainingScenarioService.class);
 
     @Autowired
     PearlExtractEntities pearlExtractEntities;
-
-    @Autowired
-    ResourceLoader resourceLoader;
 
     public TrainingScenario getTrainingScenario(File scenariiFolder, String tsId) {
 
@@ -39,14 +33,15 @@ public class TrainingScenarioService {
 
             TrainingScenario ts = objectMapper.readValue(infoFile, TrainingScenario.class);
 
-            List<CampaignDto> campaigns = Arrays.stream(scenarioDirectory.listFiles()).filter(File::isDirectory)
+            List<CampaignDto> campaigns = Arrays.stream(scenarioDirectory.listFiles())
+                    .filter(File::isDirectory)
                     .map(f -> {
                         try {
-                            return pearlExtractEntities
-                                    .getPearlCampaignFromFods(new File(f, "pearl/pearl_campaign.fods"));
+                            return pearlExtractEntities.getPearlCampaignFromFods(new File(f, "pearl/pearl_campaign" +
+                                    ".fods"));
                         } catch (Exception e) {
-                            LOGGER.warn("Error when extracting campaign from {} ", f.getAbsolutePath());
-                            LOGGER.warn(e.getMessage());
+                            log.warn("Error when extracting campaign from {} ", f.getAbsolutePath());
+                            log.warn(e.getMessage());
                             return null;
                         }
                     }).collect(Collectors.toList());
@@ -58,8 +53,7 @@ public class TrainingScenarioService {
             return ts;
 
         } catch (Exception e) {
-            LOGGER.warn("Error when getting scenario {}", tsId);
-            LOGGER.warn(e.getMessage());
+            log.warn("Error when getting scenario {}", tsId, e);
             return null;
         }
 
@@ -73,8 +67,7 @@ public class TrainingScenarioService {
             TrainingScenario ts = objectMapper.readValue(infoFile, TrainingScenario.class);
             return ts.getType();
         } catch (Exception e) {
-            LOGGER.warn("Error when getting scenario type {}", tsId);
-            LOGGER.warn(e.getMessage());
+            log.warn("Error when getting scenario type {}", tsId, e);
             return null;
         }
     }

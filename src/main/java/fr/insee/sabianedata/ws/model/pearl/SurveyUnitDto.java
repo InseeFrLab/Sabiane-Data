@@ -3,10 +3,10 @@ package fr.insee.sabianedata.ws.model.pearl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.annotation.XmlElement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,6 +16,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 @JacksonXmlRootElement(localName = "SurveyUnit")
+@Slf4j
 public class SurveyUnitDto {
     private static final Logger LOGGER = LoggerFactory.getLogger(SurveyUnitDto.class);
 
@@ -39,7 +40,6 @@ public class SurveyUnitDto {
     @JacksonXmlProperty(localName = "Move")
     private Boolean move;
     @JacksonXmlProperty(localName = "ContactOutcome")
-    @XmlElement(required = false)
     private ContactOutcomeDto contactOutcome;
     @JacksonXmlProperty(localName = "ContactAttempts")
     private ArrayList<ContactAttemptDto> contactAttempts = new ArrayList<>();
@@ -47,7 +47,6 @@ public class SurveyUnitDto {
     private ArrayList<SurveyUnitStateDto> states = new ArrayList<>();
     @JacksonXmlProperty(localName = "SurveyUnitIdentification")
     @JsonProperty(value = "identification")
-    @XmlElement(required = false)
     private Identification identification;
 
     public String getId() {
@@ -113,7 +112,7 @@ public class SurveyUnitDto {
     public void setComment(String comment) {
         this.comment = comment;
         CommentDto interviewerComment = new CommentDto(CommentType.INTERVIEWER, comment);
-        this.comments = Arrays.asList(interviewerComment);
+        this.comments = List.of(interviewerComment);
     }
 
     public List<CommentDto> getComments() {
@@ -189,7 +188,7 @@ public class SurveyUnitDto {
         try {
             return objectMapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.warn("Coudn't stringify survey-unit", e);
         }
         return "";
     }
