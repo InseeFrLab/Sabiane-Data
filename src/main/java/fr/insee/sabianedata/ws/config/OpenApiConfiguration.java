@@ -58,8 +58,7 @@ public class OpenApiConfiguration {
 	@Bean
 	@ConditionalOnProperty(name = "fr.insee.sabianedata.security", havingValue = "none")
 	public OpenAPI customOpenAPI() {
-		final OpenAPI openapi = createOpenAPI();
-		return openapi;
+        return createOpenAPI();
 	}
 
 	@ConditionalOnProperty(name = "fr.insee.sabianedata.security", havingValue = "keycloak", matchIfMissing = true)

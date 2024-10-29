@@ -13,14 +13,10 @@ public class UtilsService {
 
     public String getRequesterId(HttpServletRequest request) {
 
-        switch (securityMode) {
-            case "none":
-                return "GUEST";
-            case "keycloak":
-                return request.getUserPrincipal().getName();
-            default:
-                return "GUEST";
-        }
+        return switch (securityMode) {
+            case "keycloak" -> request.getUserPrincipal().getName();
+            default -> "GUEST";
+        };
     }
 
 }

@@ -50,7 +50,7 @@ public class SpringKeycloakConfiguration extends KeycloakWebSecurityConfigurerAd
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth)  {
         KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
         // simple Authority Mapper to avoid ROLE_
         keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());

@@ -81,9 +81,9 @@ public class DateParser {
 
     /**
      * 
-     * @param input
-     * @param ldt
-     * @return
+     * @param input day modificator
+     * @param ldt date to update
+     * @return updated date as a Long
      */
     public static Long updateDays(String input, LocalDateTime ldt) {
         Matcher matcher = relativeDatePattern.matcher(input);
@@ -111,10 +111,6 @@ public class DateParser {
 
     public static LocalDateTime longToLdt(Long date) {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneOffset.UTC);
-    }
-
-    public static String longToString(Long input) {
-        return ldtToString(longToLdt(input));
     }
 
     public static Long ldtToLong(LocalDateTime ldt) {

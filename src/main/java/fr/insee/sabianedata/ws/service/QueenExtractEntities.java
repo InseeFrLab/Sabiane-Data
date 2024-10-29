@@ -3,7 +3,6 @@ package fr.insee.sabianedata.ws.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,8 +34,7 @@ public class QueenExtractEntities {
     }
 
     public CampaignDto getQueenCampaignFromXMLFile(File file) throws IOException {
-        CampaignDto campaign = xmlMapper.readValue(file, CampaignDto.class);
-        return campaign;
+        return xmlMapper.readValue(file, CampaignDto.class);
     }
 
     public CampaignDto getQueenCampaignFromFods(File fods) throws Exception {
@@ -47,16 +45,14 @@ public class QueenExtractEntities {
     public List<SurveyUnitDto> getQueenSurveyUnitsFromFods(File fods, String folder) throws Exception {
         File file = queenTransformService.getQueenSurveyUnits(fods);
         SurveyUnits surveyUnits = xmlMapper.readValue(file, SurveyUnits.class);
-        List<SurveyUnitDto> surveyUnitsList = surveyUnits.getSurveyUnits().stream().map(s -> {
+        return surveyUnits.getSurveyUnits().stream().map(s -> {
             SurveyUnitDto suDto = new SurveyUnitDto(s);
             suDto.extractJsonFromFiles(folder);
             return suDto;
         }).collect(Collectors.toList());
-        return surveyUnitsList != null ? surveyUnitsList : Collections.emptyList();
     }
 
-    // TODO : remove unused parameter
-    public List<QuestionnaireModel> getQueenQuestionnaireModelsFromFods(File fods, String folder) throws Exception {
+    public List<QuestionnaireModel> getQueenQuestionnaireModelsFromFods(File fods) throws Exception {
         ArrayList<QuestionnaireModel> lists = new ArrayList<>();
         File file = queenTransformService.getQueenQuestionnaires(fods);
         QuestionnaireModels questionnaireModels = xmlMapper.readValue(file, QuestionnaireModels.class);
@@ -67,7 +63,7 @@ public class QueenExtractEntities {
 
     public List<QuestionnaireModelDto> getQueenQuestionnaireModelsDtoFromFods(File fods, String folder)
             throws Exception {
-        List<QuestionnaireModel> questionnaireModels = getQueenQuestionnaireModelsFromFods(fods, folder);
+        List<QuestionnaireModel> questionnaireModels = getQueenQuestionnaireModelsFromFods(fods);
         return questionnaireModels.stream()
                 .map(q -> new QuestionnaireModelDto(q, folder)).collect(Collectors.toList());
     }

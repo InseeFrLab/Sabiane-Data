@@ -8,11 +8,7 @@ import java.io.File;
 @Service
 public class PearlTransformService {
 
-	private PearlCampaignTransformer pearlCampaignTransformer = new PearlCampaignTransformer();
-
-	public File pearlCampaginFods2Xml(File input, String fileName) throws Exception {
-		return pearlCampaignTransformer.transform(input, fileName);
-	}
+	private final PearlCampaignTransformer pearlCampaignTransformer = new PearlCampaignTransformer();
 
 	public File getPearlCampaign(File fodsInput) throws Exception {
 		return pearlCampaignTransformer.extractCampaign(fodsInput);
