@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import fr.insee.sabianedata.ws.utils.DateParser;
+import lombok.Getter;
 
 @JacksonXmlRootElement(localName = "Visibility")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -32,6 +33,12 @@ public class Visibility {
     private Long interviewerStartDate;
     private Long managementStartDate;
     private Long endDate;
+    @Getter
+    private final String mail="no-mail-yet";
+    @Getter
+    private final String tel = "no-tel-yet";
+    @Getter
+    private final boolean useLetterCommunication = false;
 
     public Long getCollectionStartDate() {
         return collectionStartDate;
