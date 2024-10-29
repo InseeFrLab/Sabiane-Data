@@ -20,21 +20,8 @@ public class PearlExtractEntities {
         File file = pearlTransformService.getPearlSurveyUnits(fods);
         XmlMapper xmlMapper = new XmlMapper();
         SurveyUnits surveyUnits = xmlMapper.readValue(file, SurveyUnits.class);
-        return surveyUnits.getSurveyUnits() != null ? surveyUnits.getSurveyUnits() : new ArrayList<>();
-    }
-
-    public List<InterviewerDto> getPearlInterviewersFromFods(File fods) throws Exception {
-        File file = pearlTransformService.getPearlInterviewers(fods);
-        XmlMapper xmlMapper = new XmlMapper();
-        InterviewersDto interviewers = xmlMapper.readValue(file, InterviewersDto.class);
-        return interviewers.getInterviewers() != null ? interviewers.getInterviewers() : new ArrayList<>();
-    }
-
-    public List<OrganisationUnitContextDto> getPearlOrganisationUnitsFromFods(File fods) throws Exception {
-        File file = pearlTransformService.getPearlContext(fods);
-        XmlMapper xmlMapper = new XmlMapper();
-        Context context = xmlMapper.readValue(file, Context.class);
-        return context.getOrganisationUnits() != null ? context.getOrganisationUnits() : new ArrayList<>();
+        return surveyUnits.getSurveyUnits() == null ? new ArrayList<>() :
+                surveyUnits.getSurveyUnits().stream().peek(SurveyUnitDto::cleanAttributes).toList();
     }
 
     public CampaignDto getPearlCampaignFromFods(File fods) throws Exception {
@@ -42,8 +29,7 @@ public class PearlExtractEntities {
         XmlMapper xmlMapper = new XmlMapper();
         CampaignDto campaignDto = xmlMapper.readValue(file, CampaignDto.class);
         List<Visibility> visibilities = campaignDto.getVisibilities();
-        List<Visibility> newVisibilities = visibilities.stream().map(v -> new Visibility(v))
-                .collect(Collectors.toList());
+        List<Visibility> newVisibilities = visibilities.stream().map(Visibility::new).collect(Collectors.toList());
         campaignDto.setVisibilities(newVisibilities);
         return campaignDto;
     }
