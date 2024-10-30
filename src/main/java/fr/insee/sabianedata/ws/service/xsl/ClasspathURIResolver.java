@@ -18,15 +18,11 @@ public class ClasspathURIResolver implements URIResolver {
 
     @Override
     public Source resolve(String href, String base) {
-        log.debug("Resolving URI with href: {} and base: {}", href, base);
         String resolvedHref;
         if (href.equals("./utils.xsl")) {
             resolvedHref = href.replaceFirst(".", "/xslt");
-            log.debug("Resolved XSLT URI is: {}", resolvedHref);
-
         } else {
             resolvedHref = href;
-            log.debug("Resolved URI href is: {}", resolvedHref);
             return new StreamSource(new File(resolvedHref));
         }
         return new StreamSource(ClasspathURIResolver.class.getResourceAsStream(resolvedHref));
