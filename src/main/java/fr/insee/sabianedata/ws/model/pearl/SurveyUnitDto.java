@@ -52,11 +52,10 @@ public class SurveyUnitDto {
     private Identification identification;
 
 
-    public void cleanAttributes(){
+    public void cleanAttributes() {
         this.states = states == null ? new ArrayList<>() : states;
         this.contactAttempts = contactAttempts == null ? new ArrayList<>() : contactAttempts;
-        CommentDto interviewerComment = new CommentDto(CommentType.INTERVIEWER, comment);
-        this.comments = List.of(interviewerComment);
+        this.comments = comment == null ? new ArrayList<>() : List.of(new CommentDto(CommentType.INTERVIEWER, comment));
     }
 
     public SurveyUnitDto(SurveyUnitDto su) {
