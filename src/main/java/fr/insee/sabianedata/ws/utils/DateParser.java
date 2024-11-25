@@ -80,7 +80,7 @@ public class DateParser {
     }
 
     /**
-     * 
+     * Apply a date modificator (i.e.`J+2`) to a date and return the updated date
      * @param input day modificator
      * @param ldt date to update
      * @return updated date as a Long

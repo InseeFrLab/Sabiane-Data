@@ -30,6 +30,9 @@ public class HealthCheckController {
     private final PearlApiService pearlApiService;
     private final QueenApiService queenApiService;
 
+    private final static String OK = "OK";
+    private final static String KO = "KO";
+
     @Operation(summary = "Healthcheck, check if api are alive", description = "Healthcheck on Pearl and Queen API")
     @GetMapping(path = "/healthcheck")
     public ResponseEntity<ResponseModel> healthCheck(HttpServletRequest request) {
@@ -45,7 +48,7 @@ public class HealthCheckController {
     @GetMapping(path = "/queen/api/healthcheck")
     public ResponseEntity<Object> healthCheckQueen(HttpServletRequest request) {
         boolean queenIsHealthy = queenApiService.healthCheck(request);
-        log.debug("HealthCheck on Queen API resulted in {}", queenIsHealthy ? "OK" : "KO");
+        log.debug("HealthCheck on Queen API resulted in {}", queenIsHealthy ? OK : KO);
         return queenIsHealthy ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
 
     }
@@ -54,7 +57,7 @@ public class HealthCheckController {
     @GetMapping(path = "/pearl/api/healthcheck")
     public ResponseEntity<Object> healthCheckPearl(HttpServletRequest request) {
         boolean pearlIsHealthy = pearlApiService.healthCheck(request);
-        log.debug("HealthCheck on Pearl API resulted in {}", pearlIsHealthy ? "OK" : "KO");
+        log.debug("HealthCheck on Pearl API resulted in {}", pearlIsHealthy ? OK : KO);
         return pearlIsHealthy ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
 
     }
