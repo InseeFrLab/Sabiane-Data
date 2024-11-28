@@ -20,10 +20,12 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @Getter
 @Setter
 @Slf4j
-public class SurveyUnitDto {
+public class PearlSurveyUnit {
 
-    @JacksonXmlProperty(localName = "Id")
+    // will be randomly generated => not extracted from XML source
     private String id;
+    @JacksonXmlProperty(localName = "Id")
+    private String displayName;
     @JacksonXmlElementWrapper(localName = "Persons")
     private ArrayList<Person> persons;
     @JacksonXmlProperty(localName = "Address")
@@ -44,12 +46,13 @@ public class SurveyUnitDto {
     @JacksonXmlProperty(localName = "ContactOutcome")
     private ContactOutcomeDto contactOutcome;
     @JacksonXmlProperty(localName = "ContactAttempts")
-    private ArrayList<ContactAttemptDto> contactAttempts = new ArrayList<>();
+    private List<ContactAttemptDto> contactAttempts = new ArrayList<>();
     @JacksonXmlProperty(localName = "States")
-    private ArrayList<SurveyUnitStateDto> states = new ArrayList<>();
+    private List<SurveyUnitStateDto> states = new ArrayList<>();
     @JacksonXmlProperty(localName = "SurveyUnitIdentification")
     @JsonProperty(value = "identification")
     private Identification identification;
+    private String interviewerId;
 
 
     public void cleanAttributes() {
@@ -58,8 +61,9 @@ public class SurveyUnitDto {
         this.comments = comment == null ? new ArrayList<>() : List.of(new CommentDto(CommentType.INTERVIEWER, comment));
     }
 
-    public SurveyUnitDto(SurveyUnitDto su) {
+    public PearlSurveyUnit(PearlSurveyUnit su) {
         this.id = su.getId();
+        this.displayName = su.getDisplayName();
         this.persons = su.getPersons();
         this.address = su.getAddress();
         this.organizationUnitId = su.getOrganizationUnitId();
@@ -67,10 +71,11 @@ public class SurveyUnitDto {
         this.campaign = su.getCampaign();
         this.sampleIdentifiers = su.getSampleIdentifiers();
         this.comment = su.getComment();
-        this.comments = su.getComments();
+        this.comments = comment == null ? new ArrayList<>() : List.of(new CommentDto(CommentType.INTERVIEWER, comment));
         this.contactOutcome = su.getContactOutcome();
-        this.contactAttempts = su.getContactAttempts();
-        this.states = su.getStates();
+        // contactAttempts are added later, for date twisting
+        this.contactAttempts = new ArrayList<>();
+        this.states = new ArrayList<>();
         this.identification = su.getIdentification();
         this.move = su.getMove();
     }

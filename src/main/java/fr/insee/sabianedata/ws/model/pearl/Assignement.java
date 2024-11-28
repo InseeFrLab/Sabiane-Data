@@ -30,7 +30,7 @@ public class Assignement {
         try {
             return objectMapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            log.warn("Coudn't stringify assignement",e);
+            log.warn("Couldn't stringify assignment",e);
         }
         return "";
     }

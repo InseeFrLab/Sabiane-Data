@@ -1,62 +1,75 @@
 package fr.insee.sabianedata.ws.service;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import fr.insee.sabianedata.ws.model.pearl.PearlCampaign;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.insee.sabianedata.ws.model.massiveAttack.ScenarioType;
 import fr.insee.sabianedata.ws.model.massiveAttack.TrainingScenario;
-import fr.insee.sabianedata.ws.model.pearl.CampaignDto;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class TrainingScenarioService {
 
-    @Autowired
-    PearlExtractEntities pearlExtractEntities;
+    private final PearlExtractEntities pearlExtractEntities;
 
     public TrainingScenario getTrainingScenario(File scenariiFolder, String tsId) {
 
-        try {
-            File scenarioDirectory = new File(scenariiFolder, tsId);
-            File infoFile = new File(scenarioDirectory, "info.json");
-            ObjectMapper objectMapper = new ObjectMapper();
+        Path scenarioDirectory = scenariiFolder.toPath().resolve(tsId);
+        Path infoFilePath = scenarioDirectory.resolve("info.json");
+        ObjectMapper objectMapper = new ObjectMapper();
 
-            TrainingScenario ts = objectMapper.readValue(infoFile, TrainingScenario.class);
-
-            List<CampaignDto> campaigns = Arrays.stream(scenarioDirectory.listFiles())
-                    .filter(File::isDirectory)
-                    .map(f -> {
-                        try {
-                            return pearlExtractEntities.getPearlCampaignFromFods(new File(f, "pearl/pearl_campaign" +
-                                    ".fods"));
-                        } catch (Exception e) {
-                            log.warn("Error when extracting campaign from {} ", f.getAbsolutePath());
-                            log.warn(e.getMessage());
-                            return null;
-                        }
-                    }).collect(Collectors.toList());
-            if (campaigns.contains(null)) {
-                throw new RuntimeException("extraction error");
-            }
-
-            ts.setCampaigns(campaigns);
-            return ts;
-
-        } catch (Exception e) {
-            log.warn("Error when getting scenario {}", tsId, e);
+        TrainingScenario trainingScenario;
+        try (InputStream inputStream = Files.newInputStream(infoFilePath)) {
+            trainingScenario = objectMapper.readValue(inputStream, TrainingScenario.class);
+        } catch (IOException e) {
+            log.warn("Unable to load TrainingScenario from {}", infoFilePath, e);
             return null;
         }
 
+        try (Stream<Path> paths = Files.list(scenarioDirectory)) {
+            List<PearlCampaign> campaigns = paths
+                    .filter(Files::isDirectory)
+                    .map(path -> processCampaign(path.toFile()))
+                    .collect(Collectors.toList());
+
+            trainingScenario.setCampaigns(campaigns);
+        } catch (IOException e) {
+            log.warn("Error while listing directories in {}", scenarioDirectory, e);
+            throw new RuntimeException("Failed to process campaigns", e);
+        } catch (RuntimeException e) {
+            log.warn("Error when processing campaigns for scenario {}", tsId, e);
+            return null;
+        }
+
+        return trainingScenario;
+
+
+    }
+
+    private PearlCampaign processCampaign(File campaignDirectory) {
+        try {
+            File pearlCampaignFile = new File(campaignDirectory, "pearl/pearl_campaign.fods");
+            return pearlExtractEntities.getPearlCampaignFromFods(pearlCampaignFile);
+        } catch (Exception e) {
+            log.warn("Error when extracting campaign from {}", campaignDirectory.getAbsolutePath(), e);
+            throw new RuntimeException("Campaign extraction failed", e);
+        }
     }
 
     public ScenarioType getScenarioType(File scenariiFolder, String tsId) {
@@ -72,6 +85,9 @@ public class TrainingScenarioService {
         }
     }
 
+    // TODO : create an in-memory persistence layer to persist all scenario at start-up
+    //  move this currently unused function there,
+    //  and call it instead of generating scenario from scratch for each call ;)
     public List<TrainingScenario> getTrainingScenarii(File scenariiFolder) {
         Stream<File> folders = Arrays.stream(scenariiFolder.listFiles());
         return folders.map(f -> getTrainingScenario(scenariiFolder, f.getName())).collect(Collectors.toList());

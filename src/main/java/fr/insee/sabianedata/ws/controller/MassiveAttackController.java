@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,18 +29,14 @@ import lombok.extern.slf4j.Slf4j;
 
 @Tag(name = "Massive Attack : Post data to Pearl and Queen APIs")
 @RestController
+@RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/massive-attack/api")
 public class MassiveAttackController {
 
-    @Autowired
-    private MassiveAttackService massiveAttackService;
-
-    @Autowired
-    private PearlApiService pearlApiService;
-
-    @Autowired
-    private UtilsService utilsService;
+    private final MassiveAttackService massiveAttackService;
+    private final PearlApiService pearlApiService;
+    private final UtilsService utilsService;
 
     @Operation(summary = "Return list of available training courses")
     @GetMapping("training-course-scenario")
@@ -57,17 +53,13 @@ public class MassiveAttackController {
 
     @Operation(summary = "Create a training course")
     @PostMapping(value = "training-course", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseModel> generateTrainingCourse(HttpServletRequest request,
-            @RequestParam(value = "campaignId") String campaignId,
-            @RequestParam(value = "campaignLabel") String campaignLabel,
-            @RequestParam(value = "organisationUnitId") String organisationUnitId,
-            @RequestParam(value = "dateReference") Long dateReference,
-            @RequestParam(value = "interviewers", defaultValue = "") List<String> interviewers) {
+    public ResponseEntity<ResponseModel> generateTrainingCourse(HttpServletRequest request, @RequestParam(value =
+            "campaignId") String campaignId, @RequestParam(value = "campaignLabel") String campaignLabel,
+                                                                @RequestParam(value = "organisationUnitId") String organisationUnitId, @RequestParam(value = "dateReference") Long dateReference, @RequestParam(value = "interviewers", defaultValue = "") List<String> interviewers) {
         log.info("USER : {} | create scenario {}  -> {}", utilsService.getRequesterId(request), campaignId,
                 campaignLabel);
         ResponseModel result = massiveAttackService.generateTrainingScenario(campaignId, campaignLabel,
-                organisationUnitId, request,
-                dateReference,  interviewers);
+                organisationUnitId, request, dateReference, interviewers);
         return result.isSuccess() ? ResponseEntity.ok().body(result) : ResponseEntity.badRequest().body(result);
     }
 
@@ -86,17 +78,16 @@ public class MassiveAttackController {
     @Operation(summary = "Delete a campaign")
     @DeleteMapping(path = "campaign/{id}")
     public ResponseEntity<String> deleteCampaignById(HttpServletRequest request,
-            @PathVariable(value = "id") String campaignId) {
+                                                     @PathVariable(value = "id") String campaignId) {
         log.warn("USER : {} | delete campaign {}", utilsService.getRequesterId(request), campaignId);
         return massiveAttackService.deleteCampaign(request, campaignId);
     }
 
     @Operation(summary = "Get list of training courses")
     @GetMapping(path = "/training-courses")
-    public ResponseEntity<List<Campaign>> getTrainingSessions(HttpServletRequest request,
-
-            @RequestParam(value = "admin", defaultValue = "false") boolean admin) {
-        List<Campaign> pearlCampaigns = pearlApiService.getCampaigns(request,  admin);
+    public ResponseEntity<List<Campaign>> getTrainingSessions(HttpServletRequest request, @RequestParam(value =
+            "admin", defaultValue = "false") boolean admin) {
+        List<Campaign> pearlCampaigns = pearlApiService.getCampaigns(request, admin);
 
         log.info("USER : {} | get campaigns ", utilsService.getRequesterId(request));
         return new ResponseEntity<>(pearlCampaigns, HttpStatus.OK);
@@ -104,8 +95,7 @@ public class MassiveAttackController {
 
     @Operation(summary = "Return all OrganisationalUnits")
     @GetMapping(value = "organisation-units", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<OrganisationUnitDto>> getAllOrganisationalUnits(HttpServletRequest request
-           ) {
+    public ResponseEntity<List<OrganisationUnitDto>> getAllOrganisationalUnits(HttpServletRequest request) {
         log.info("USER : {} | get organization units ", utilsService.getRequesterId(request));
         List<OrganisationUnitDto> ous = pearlApiService.getAllOrganizationUnits(request);
         if (ous.isEmpty()) {

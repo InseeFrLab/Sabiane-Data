@@ -2,46 +2,21 @@ package fr.insee.sabianedata.ws.model.massiveAttack;
 
 import java.util.List;
 
-import fr.insee.sabianedata.ws.model.pearl.CampaignDto;
+import fr.insee.sabianedata.ws.model.pearl.PearlCampaign;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class TrainingScenario {
 
-    public TrainingScenario() {
-
-    }
-
-    public TrainingScenario(List<CampaignDto> campaigns, ScenarioType type, String label) {
-        this.campaigns = campaigns;
-        this.type = type;
-        this.label = label;
-    }
-
-    private List<CampaignDto> campaigns;
+    // TODO migrate to massiveCampaign
+    private List<PearlCampaign> campaigns;
     private ScenarioType type;
     private String label;
-
-    public ScenarioType getType() {
-        return type;
-    }
-
-    public void setType(ScenarioType type) {
-        this.type = type;
-    }
-
-    public List<CampaignDto> getCampaigns() {
-        return campaigns;
-    }
-
-    public void setCampaigns(List<CampaignDto> campaigns) {
-        this.campaigns = campaigns;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
 
 }

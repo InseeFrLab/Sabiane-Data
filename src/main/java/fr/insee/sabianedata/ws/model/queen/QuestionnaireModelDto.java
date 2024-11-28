@@ -1,13 +1,16 @@
 package fr.insee.sabianedata.ws.model.queen;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import fr.insee.sabianedata.ws.Constants;
 import fr.insee.sabianedata.ws.utils.JsonFileToJsonNode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.File;
 
+@Getter
+@Setter
 public class QuestionnaireModelDto extends QuestionnaireModel {
-
-    public static final String FOLDER = "questionnaireModels";
 
     private JsonNode value;
 
@@ -15,15 +18,8 @@ public class QuestionnaireModelDto extends QuestionnaireModel {
         super(questionnaireModel.getIdQuestionnaireModel(), questionnaireModel.getLabel(),
                 questionnaireModel.getRequiredNomenclatureIds());
         File questionnaireFile = new File(
-                folder + File.separator + FOLDER + File.separator + questionnaireModel.getFileName());
+                folder + File.separator + Constants.QUESTIONNAIRE_MODELS + File.separator + questionnaireModel.getFileName());
         this.value = JsonFileToJsonNode.getJsonNodeFromFile(questionnaireFile);
     }
 
-    public JsonNode getValue() {
-        return value;
-    }
-
-    public void setValue(JsonNode value) {
-        this.value = value;
-    }
 }

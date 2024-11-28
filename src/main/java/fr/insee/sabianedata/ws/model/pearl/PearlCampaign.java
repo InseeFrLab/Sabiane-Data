@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @JacksonXmlRootElement(localName = "Campaign")
-public class CampaignDto {
+public class PearlCampaign {
 
     @JacksonXmlProperty(localName = "Campaign")
     private String campaign;

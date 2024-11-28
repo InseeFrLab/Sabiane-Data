@@ -1,13 +1,13 @@
 package fr.insee.sabianedata.ws.service;
 
-import fr.insee.sabianedata.ws.model.queen.CampaignDto;
+import fr.insee.sabianedata.ws.model.queen.QueenCampaign;
 import fr.insee.sabianedata.ws.model.queen.NomenclatureDto;
+import fr.insee.sabianedata.ws.model.queen.QueenSurveyUnit;
 import fr.insee.sabianedata.ws.model.queen.QuestionnaireModelDto;
-import fr.insee.sabianedata.ws.model.queen.SurveyUnitDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -18,32 +18,30 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class QueenApiService {
 
     @Value("${fr.insee.sabianedata.queen-api.url}")
     private String queenApiUrl;
 
+    private final RestTemplate restTemplate;
 
-    @Autowired
-    RestTemplate restTemplate;
-
-    public ResponseEntity<?> postCampaignToApi(HttpServletRequest request, CampaignDto campaignDto) {
-        log.info("Creating Campaign {}", campaignDto.getId());
+    public ResponseEntity<?> postCampaignToApi(HttpServletRequest request, QueenCampaign queenCampaign) {
+        log.info("Creating Campaign {}", queenCampaign.getId());
         final String apiUri = queenApiUrl + "/api/campaigns";
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return restTemplate.exchange(apiUri, HttpMethod.POST, new HttpEntity<>(campaignDto, httpHeaders), String.class);
+        return restTemplate.exchange(apiUri, HttpMethod.POST, new HttpEntity<>(queenCampaign, httpHeaders), String.class);
     }
 
-    public ResponseEntity<?> postUeToApi(HttpServletRequest request, SurveyUnitDto surveyUnitDto,
-            CampaignDto campaignDto)  {
-        log.info("Create SurveyUnit {}", surveyUnitDto.getId());
-        String idCampaign = campaignDto.getId();
+    public ResponseEntity<?> postUeToApi(HttpServletRequest request, QueenSurveyUnit queenSurveyUnit,
+                                         String idCampaign)  {
+        log.info("Create SurveyUnit {}", queenSurveyUnit.getId());
         final String apiUri = queenApiUrl + "/api/campaign/" + idCampaign
                 + "/survey-unit";
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return restTemplate.exchange(apiUri, HttpMethod.POST, new HttpEntity<>(surveyUnitDto, httpHeaders),
+        return restTemplate.exchange(apiUri, HttpMethod.POST, new HttpEntity<>(queenSurveyUnit, httpHeaders),
                 String.class);
     }
 

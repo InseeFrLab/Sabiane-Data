@@ -23,17 +23,12 @@ public final class Constants {
 	public static final String PEARL_EXTRACT_CAMPAIGN = XSLT_FOLDER_PATH + "/pearl-extract-campaign.xsl";
 	public static final String PEARL_EXTRACT_ASSIGNEMENT = XSLT_FOLDER_PATH + "/pearl-extract-assignement.xsl";
 	public static final String PEARL_EXTRACT_SURVEYUNITS = XSLT_FOLDER_PATH + "/pearl-extract-survey-units.xsl";
-	public static final String PEARL_EXTRACT_INTERVIEWERS = XSLT_FOLDER_PATH + "/pearl-extract-interviewers.xsl";
-	public static final String PEARL_EXTRACT_CONTEXT = XSLT_FOLDER_PATH + "/pearl-extract-context.xsl";
+
 
 	public static final String NOMENCLATURES = "nomenclatures";
 	public static final String QUESTIONNAIRE_MODELS = "questionnaireModels";
 	public static final String CAMPAIGN = "campaign";
 	public static final String SURVEY_UNITS = "surveyUnits";
-	public static final String ASSIGNEMENT = "assignement";
-	public static final String INTERVIEWERS = "interviewers";
-	public static final String CONTEXT = "context";
-
 
 	// ---------- Utilies
 	/** Generic file getter from classpath 

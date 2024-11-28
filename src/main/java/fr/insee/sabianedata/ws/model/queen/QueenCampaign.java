@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CampaignDto {
+public class QueenCampaign {
 
     @JacksonXmlProperty(localName = "Id")
     private String id;

@@ -11,18 +11,16 @@ import lombok.Setter;
 @JacksonXmlRootElement(localName = "ContactOutcome")
 @NoArgsConstructor
 @Getter
+@Setter
 public class ContactOutcomeDto {
 
-    @Setter
     @JacksonXmlProperty(localName = "Value")
     private String type;
     @JacksonXmlProperty(localName = "AttemptsNumber")
     private String attemptsNumber;
-    @Setter
     @JacksonXmlProperty(localName = "Date")
     private String dateString;
 
-    @Setter
     private Long date;
     private int totalNumberOfContactAttempts;
 
@@ -30,11 +28,7 @@ public class ContactOutcomeDto {
         this.type = co.getType();
         this.dateString = co.getDateString();
         this.date = DateParser.relativeDateParse(co.getDateString(), reference);
-        this.totalNumberOfContactAttempts = co.getTotalNumberOfContactAttempts();
-    }
-
-    public void setAttemptsNumber(String attemptsNumber) {
-        this.totalNumberOfContactAttempts = Integer.parseInt(attemptsNumber);
+        this.totalNumberOfContactAttempts = Integer.parseInt(co.getAttemptsNumber());
     }
 
 }

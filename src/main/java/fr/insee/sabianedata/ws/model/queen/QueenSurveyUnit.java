@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SurveyUnitDto extends SurveyUnit {
+public class QueenSurveyUnit extends SurveyUnit {
 
     public static final String FOLDER = "surveyUnits";
 
@@ -19,7 +19,7 @@ public class SurveyUnitDto extends SurveyUnit {
     private JsonNode personalization;
     private JsonNode stateData;
 
-    public SurveyUnitDto(SurveyUnit surveyUnit, String folder) {
+    public QueenSurveyUnit(SurveyUnit surveyUnit, String folder) {
         super(surveyUnit.getId(), surveyUnit.getQuestionnaireId(), surveyUnit.getStateDataFile());
         String finalFolder = folder + File.separator + FOLDER;
         File dtodataFile = new File(finalFolder + File.separator + surveyUnit.getDataFile());
@@ -30,13 +30,13 @@ public class SurveyUnitDto extends SurveyUnit {
         this.personalization = JsonFileToJsonNode.getJsonNodeFromFile(personalizationFile);
     }
 
-    public SurveyUnitDto(SurveyUnit surveyUnit) {
+    public QueenSurveyUnit(SurveyUnit surveyUnit) {
         super(surveyUnit.getId(), surveyUnit.getQuestionnaireId(), surveyUnit.getStateDataFile(),
                 surveyUnit.getDataFile(),
                 surveyUnit.getCommentFile(), surveyUnit.getPersonalizationFile());
     }
 
-    public SurveyUnitDto(SurveyUnitDto suDto, SurveyUnit su) {
+    public QueenSurveyUnit(QueenSurveyUnit suDto, SurveyUnit su) {
         super(su);
         this.data = suDto.getData();
         this.comment = suDto.getComment();
