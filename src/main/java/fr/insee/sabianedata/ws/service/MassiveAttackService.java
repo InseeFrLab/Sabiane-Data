@@ -91,8 +91,6 @@ public class MassiveAttackService {
     }
 
 
-
-
     @PreDestroy
     private void cleanup() {
         boolean result = FileSystemUtils.deleteRecursively(tempFolder);
@@ -104,8 +102,8 @@ public class MassiveAttackService {
         ids.forEach(id -> externalApiService.deleteCampaign(request, id));
     }
 
-    public ResponseEntity<String> deleteCampaign(HttpServletRequest request, String id){
-        return externalApiService.deleteCampaign(request,id);
+    public ResponseEntity<String> deleteCampaign(HttpServletRequest request, String id) {
+        return externalApiService.deleteCampaign(request, id);
     }
 
     private TrainingCourse prepareTrainingCourse(String campaignId, String scenario, String campaignLabel,
@@ -145,8 +143,9 @@ public class MassiveAttackService {
         MassiveCampaign campaign = new MassiveCampaign(pearlCampaign, queenCampaign);
 
         // 4 : update campaigns Label and make campaignId uniq => {campaign.id}_{I/M}_{OU}_{date}_{scenarLabel}
-        campaign.updateCamapignsId(String.join("_", pearlCampaign.getCampaign(), type.toString().substring(0, 1),
-                organisationUnitId, referenceDate.toString(), scenarLabel));
+        String newCampaignId = String.join("_", pearlCampaign.getCampaign(), type.toString().substring(0, 1),
+                organisationUnitId, referenceDate.toString(), scenarLabel);
+        campaign.updateCamapignsId(newCampaignId);
         campaign.updateLabel(campaignLabel);
 
         // 5 : change visibility with user OU only
@@ -156,11 +155,12 @@ public class MassiveAttackService {
         // 6 Queen : make uniq questionnaireId and map oldQuestId to new questModels
         HashMap<String, String> questionnaireIdMapping = new HashMap<>();
         questionnaireModels.forEach(qm -> {
+            String initQuestionnaireModelId = qm.getIdQuestionnaireModel();
             String newQuestionnaireModelId = String.join("_",
-                    qm.getIdQuestionnaireModel(),
+                    initQuestionnaireModelId,
                     organisationUnitId,
                     referenceDate.toString());
-            questionnaireIdMapping.put(qm.getIdQuestionnaireModel(), newQuestionnaireModelId);
+            questionnaireIdMapping.put(initQuestionnaireModelId, newQuestionnaireModelId);
             qm.setIdQuestionnaireModel(newQuestionnaireModelId);
         });
 
@@ -172,7 +172,7 @@ public class MassiveAttackService {
 
         // 7 : generate pearl survey-units for interviewers
         // big fancy method dispatching survey-unit to trainees
-        surveyUnits = generateSurveyUnits(surveyUnits, campaignId, referenceDate, organisationUnitId, interviewers,
+        surveyUnits = generateSurveyUnits(surveyUnits, newCampaignId, referenceDate, organisationUnitId, interviewers,
                 assignements, type, questionnaireIdMapping);
 
 
@@ -194,7 +194,7 @@ public class MassiveAttackService {
         // Map each PearlSurveyUnit to a MassiveSurveyUnit by finding the matching QueenSurveyUnit by id
         return pearlUnits.stream()
                 .map(pearlSu -> {
-                    QueenSurveyUnit queenSu = queenUnitMap.get(pearlSu.getId()); // Find matching QueenSurveyUnit
+                    QueenSurveyUnit queenSu = queenUnitMap.get(pearlSu.getDisplayName());
                     return new MassiveSurveyUnit(pearlSu.getId(), pearlSu, queenSu); // Create MassiveSurveyUnit
                 })
                 .toList();
@@ -236,8 +236,8 @@ public class MassiveAttackService {
     }
 
     private PearlSurveyUnit updatePearlSurveyUnit(
-            PearlSurveyUnit initialSurveyUnit, String interviewerId,
-            String newId, String campaignId,
+            PearlSurveyUnit initialSurveyUnit, String newId,
+            String interviewerId, String campaignId,
             String organisationUnitId, Long referenceDate) {
 
         PearlSurveyUnit newSu = new PearlSurveyUnit(
@@ -316,7 +316,7 @@ public class MassiveAttackService {
             case INTERVIEWER -> trainees.stream()
                     .flatMap(interviewerId -> surveyUnits.stream()
                             .map(surveyUnit -> {
-                                        String questId = surveyUnit.getQueenSurveyUnit().toString();
+                                        String questId = surveyUnit.getQueenSurveyUnit().getQuestionnaireId();
                                         String newQuestionnaireId = questionnaireIdMapping.get(questId);
                                         return updateSurveyUnit(surveyUnit,
                                                 interviewerId,
@@ -326,7 +326,7 @@ public class MassiveAttackService {
                                                 newQuestionnaireId);
                                     }
                             )
-                            .peek(su -> log.info("{}-{}", su.getId(), su.getPearlSurveyUnit().getDisplayName())))
+                    )
                     .toList();
 
             case MANAGER -> {
@@ -335,7 +335,7 @@ public class MassiveAttackService {
 
                 yield surveyUnits.stream()
                         .map(surveyUnit -> {
-                            String questId = surveyUnit.getQueenSurveyUnit().toString();
+                            String questId = surveyUnit.getQueenSurveyUnit().getQuestionnaireId();
                             String newQuestionnaireId = questionnaireIdMapping.get(questId);
 
                             return updateSurveyUnit(surveyUnit,

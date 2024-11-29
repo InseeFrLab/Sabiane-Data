@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import fr.insee.sabianedata.ws.model.pearl.PearlCampaign;
@@ -46,7 +45,7 @@ public class TrainingScenarioService {
             List<PearlCampaign> campaigns = paths
                     .filter(Files::isDirectory)
                     .map(path -> processCampaign(path.toFile()))
-                    .collect(Collectors.toList());
+                    .toList();
 
             trainingScenario.setCampaigns(campaigns);
         } catch (IOException e) {
@@ -79,7 +78,7 @@ public class TrainingScenarioService {
             ObjectMapper objectMapper = new ObjectMapper();
             TrainingScenario ts = objectMapper.readValue(infoFile, TrainingScenario.class);
             return ts.getType();
-        } catch (Exception e) {
+        } catch ( IOException e ) {
             log.warn("Error when getting scenario type {}", tsId, e);
             return null;
         }
@@ -90,7 +89,7 @@ public class TrainingScenarioService {
     //  and call it instead of generating scenario from scratch for each call ;)
     public List<TrainingScenario> getTrainingScenarii(File scenariiFolder) {
         Stream<File> folders = Arrays.stream(scenariiFolder.listFiles());
-        return folders.map(f -> getTrainingScenario(scenariiFolder, f.getName())).collect(Collectors.toList());
+        return folders.map(f -> getTrainingScenario(scenariiFolder, f.getName())).toList();
     }
 
 }

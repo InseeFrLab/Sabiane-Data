@@ -38,12 +38,12 @@ public class PearlCampaignTransformer {
         try (InputStream inputStream = FileUtils.openInputStream(input);
              OutputStream outputStream = FileUtils.openOutputStream(outputFile);
 
-             InputStream XSL = switch (type) {
+             InputStream xsl = switch (type) {
                  case CAMPAIGN -> Constants.getInputStreamFromPath(Constants.PEARL_EXTRACT_CAMPAIGN);
                  case ASSIGNEMENT -> Constants.getInputStreamFromPath(Constants.PEARL_EXTRACT_ASSIGNEMENT);
                  case SURVEY_UNITS -> Constants.getInputStreamFromPath(Constants.PEARL_EXTRACT_SURVEYUNITS);
              }) {
-            saxonService.transformFods2XML(inputStream, outputStream, XSL);
+            saxonService.transformFods2XML(inputStream, outputStream, xsl);
         } catch (Exception e) {
             String errorMessage = "An error was occured during the operations fods2xml transformation. "
                     + e.getMessage();

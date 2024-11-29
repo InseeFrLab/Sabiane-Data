@@ -22,7 +22,7 @@ public class AppWS extends SpringBootServletInitializer {
 
     public static final String APP_NAME = "sabdatab";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppWS.class);
+    private static final Logger log = LoggerFactory.getLogger(AppWS.class);
 
     public static void main(String[] args) {
         System.setProperty("spring.config.name", APP_NAME);
@@ -44,23 +44,23 @@ public class AppWS extends SpringBootServletInitializer {
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
         final Environment env = event.getApplicationContext().getEnvironment();
-        LOGGER.info("================================ Properties ================================");
+        log.info("================================ Properties ================================");
         final MutablePropertySources sources = ((AbstractEnvironment) env).getPropertySources();
-        StreamSupport.stream(sources.spliterator(), false).filter(ps -> ps instanceof EnumerablePropertySource)
+        StreamSupport.stream(sources.spliterator(), false).filter(EnumerablePropertySource.class::isInstance)
                 .map(ps -> ((EnumerablePropertySource<?>) ps).getPropertyNames()).flatMap(Arrays::stream).distinct()
                 .filter(prop -> !(prop.contains("credentials") || prop.contains("password")))
                 .filter(prop -> prop.startsWith("fr.insee") || prop.startsWith("logging") || prop.startsWith("spring")
                         || prop.startsWith("keycloak"))
-                .sorted().forEach(prop -> LOGGER.info("{}: {}", prop, env.getProperty(prop)));
-        LOGGER.info("===========================================================================");
-        LOGGER.info("Available CPU : {}", Runtime.getRuntime().availableProcessors());
-        LOGGER.info(String.format("Max memory : %.2f GB", Runtime.getRuntime().maxMemory() / 1e9d));
-        LOGGER.info("===========================================================================");
+                .sorted().forEach(prop -> log.info("{}: {}", prop, env.getProperty(prop)));
+        log.info("===========================================================================");
+        log.info("Available CPU : {}", Runtime.getRuntime().availableProcessors());
+        log.info(String.format("Max memory : %.2f GB", Runtime.getRuntime().maxMemory() / 1e9d));
+        log.info("===========================================================================");
     }
 
     @EventListener
     public void handleApplicationReady(ApplicationReadyEvent event) {
-        LOGGER.info("=============== " + APP_NAME + "  has successfully started. ===============");
+        log.info("=============== " + APP_NAME + "  has successfully started. ===============");
 
     }
 }

@@ -7,9 +7,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import fr.insee.sabianedata.ws.utils.JsonFileToJsonNode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
+@Slf4j
 public class QueenSurveyUnit extends SurveyUnit {
 
     public static final String FOLDER = "surveyUnits";
@@ -19,21 +21,11 @@ public class QueenSurveyUnit extends SurveyUnit {
     private JsonNode personalization;
     private JsonNode stateData;
 
-    public QueenSurveyUnit(SurveyUnit surveyUnit, String folder) {
-        super(surveyUnit.getId(), surveyUnit.getQuestionnaireId(), surveyUnit.getStateDataFile());
-        String finalFolder = folder + File.separator + FOLDER;
-        File dtodataFile = new File(finalFolder + File.separator + surveyUnit.getDataFile());
-        File commentFile = new File(finalFolder + File.separator + surveyUnit.getCommentFile());
-        File personalizationFile = new File(finalFolder + File.separator + surveyUnit.getPersonalizationFile());
-        this.data = JsonFileToJsonNode.getJsonNodeFromFile(dtodataFile);
-        this.comment = JsonFileToJsonNode.getJsonNodeFromFile(commentFile);
-        this.personalization = JsonFileToJsonNode.getJsonNodeFromFile(personalizationFile);
-    }
-
     public QueenSurveyUnit(SurveyUnit surveyUnit) {
         super(surveyUnit.getId(), surveyUnit.getQuestionnaireId(), surveyUnit.getStateDataFile(),
+                surveyUnit.getPersonalizationFile(),
                 surveyUnit.getDataFile(),
-                surveyUnit.getCommentFile(), surveyUnit.getPersonalizationFile());
+                surveyUnit.getCommentFile());
     }
 
     public QueenSurveyUnit(QueenSurveyUnit suDto, SurveyUnit su) {

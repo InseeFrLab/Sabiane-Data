@@ -19,7 +19,7 @@ public class SurveyUnit {
     private String id;
 
     @JacksonXmlProperty(localName = "QuestionnaireId")
-    private String QuestionnaireId;
+    private String questionnaireId;
 
     @JacksonXmlProperty(localName = "StateDataFile")
     private String stateDataFile;
@@ -38,7 +38,7 @@ public class SurveyUnit {
 
     public SurveyUnit(String id, String questionnaireId, String stateDataFile) {
         this.id = id;
-        this.QuestionnaireId = questionnaireId;
+        this.questionnaireId = questionnaireId;
         this.stateDataFile = stateDataFile;
     }
 
