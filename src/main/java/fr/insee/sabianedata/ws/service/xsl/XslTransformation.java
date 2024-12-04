@@ -22,8 +22,7 @@ public class XslTransformation {
     }
 
     public void transformFods2XML(InputStream inputFile, OutputStream outputFile, InputStream xslSheet) throws Exception {
-        TransformerFactory tFactory = new net.sf.saxon.TransformerFactoryImpl();
-        tFactory.setURIResolver(new ClasspathURIResolver());
+        TransformerFactory tFactory = TransformerFactory.newInstance();
         Transformer transformer = tFactory.newTransformer(new StreamSource(xslSheet));
         xslTransform(transformer, inputFile, outputFile);
     }

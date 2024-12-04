@@ -87,8 +87,12 @@ public class TrainingScenarioService {
     // TODO : create an in-memory persistence layer to persist all scenario at start-up
     //  move this currently unused function there,
     //  and call it instead of generating scenario from scratch for each call ;)
-    public List<TrainingScenario> getTrainingScenarii(File scenariiFolder) {
-        Stream<File> folders = Arrays.stream(scenariiFolder.listFiles());
+    public List<TrainingScenario> getTrainingScenarii(File scenariiFolder) throws IOException {
+        File[] files = scenariiFolder.listFiles();
+        if(files == null){
+            throw new IOException(String.format("%s is not a folder",scenariiFolder));
+        }
+        Stream<File> folders = Arrays.stream(files);
         return folders.map(f -> getTrainingScenario(scenariiFolder, f.getName())).toList();
     }
 

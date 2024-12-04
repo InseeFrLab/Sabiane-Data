@@ -150,7 +150,7 @@ public class ExternalApiService {
         return users.stream().map(user -> {
             validUser.setId(user);
             try {
-                ResponseEntity<?> postResponse = pearlApiService.postUsersToApi(request, userList,
+                ResponseEntity<String> postResponse = pearlApiService.postUsersToApi(request, userList,
                         ou.getId());
                 log.info("User {} created", user);
                 return postResponse;
@@ -192,7 +192,7 @@ public class ExternalApiService {
         return interviewers.stream().map(inter -> {
             validInterviewer.setId(inter);
             try {
-                ResponseEntity<?> postResponse = pearlApiService.postInterviewersToApi(request,
+                ResponseEntity<String> postResponse = pearlApiService.postInterviewersToApi(request,
                         interviewerList);
                 log.info("Interviewer {} created", inter);
                 return postResponse;

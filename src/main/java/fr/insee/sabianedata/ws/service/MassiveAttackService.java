@@ -360,7 +360,7 @@ public class MassiveAttackService {
 
 
     public List<TrainingScenario> getTrainingScenariiTitles() {
-        return new ArrayList<>(scenarii.values());
+        return scenarii.values().stream().toList();
     }
 
 
@@ -369,7 +369,7 @@ public class MassiveAttackService {
                                                   HttpServletRequest request, Long referenceDate,
                                                   List<String> interviewers) {
 
-        // TODO: use MAP SCENARIOS
+        // TODO: use persistance layer here when available
 
         ScenarioType type = trainingScenarioService.getScenarioType(tempScenariiFolder, scenarioId);
         if (type == ScenarioType.INTERVIEWER && !externalApiService.checkInterviewers(interviewers, request)) {
@@ -379,7 +379,7 @@ public class MassiveAttackService {
             return new ResponseModel(false, "Error when checking users");
         }
 
-        // TODO MAP
+        // TODO use persistance layer here when available
 
         TrainingScenario scenar = trainingScenarioService.getTrainingScenario(tempScenariiFolder, scenarioId);
 

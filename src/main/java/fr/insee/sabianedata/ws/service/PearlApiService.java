@@ -34,7 +34,7 @@ public class PearlApiService {
 
     private final RestTemplate restTemplate;
 
-    public ResponseEntity<?> postCampaignToApi(HttpServletRequest request, PearlCampaign pearlCampaign) {
+    public ResponseEntity<String> postCampaignToApi(HttpServletRequest request, PearlCampaign pearlCampaign) {
         log.info("Creating Campaign{}", pearlCampaign.getCampaign());
         final String apiUri = pearlApiUrl.concat("/api/campaign");
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
@@ -42,7 +42,7 @@ public class PearlApiService {
         return restTemplate.exchange(apiUri, HttpMethod.POST, new HttpEntity<>(pearlCampaign, httpHeaders), String.class);
     }
 
-    public ResponseEntity<?> postUesToApi(HttpServletRequest request, List<PearlSurveyUnit> surveyUnits) {
+    public ResponseEntity<String> postUesToApi(HttpServletRequest request, List<PearlSurveyUnit> surveyUnits) {
         log.info("Create SurveyUnits ");
         final String apiUri = pearlApiUrl.concat("/api/survey-units");
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
@@ -50,7 +50,7 @@ public class PearlApiService {
         return restTemplate.exchange(apiUri, HttpMethod.POST, new HttpEntity<>(surveyUnits, httpHeaders), String.class);
     }
 
-    public ResponseEntity<?> postInterviewersToApi(HttpServletRequest request, List<InterviewerDto> interviewers) {
+    public ResponseEntity<String> postInterviewersToApi(HttpServletRequest request, List<InterviewerDto> interviewers) {
         log.info("Create interviewers");
         final String apiUri = pearlApiUrl.concat("/api/interviewers");
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
@@ -60,7 +60,7 @@ public class PearlApiService {
                 String.class);
     }
 
-    public ResponseEntity<?> postUsersToApi(HttpServletRequest request, List<UserDto> users, String OuId) {
+    public ResponseEntity<String> postUsersToApi(HttpServletRequest request, List<UserDto> users, String OuId) {
         log.info("Try to create users with id {}", users.stream().map(UserDto::getId).toList());
         final String apiUri = String.join("/", pearlApiUrl, "api/organization-unit", OuId, "users");
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
@@ -69,7 +69,7 @@ public class PearlApiService {
         return restTemplate.exchange(apiUri, HttpMethod.POST, new HttpEntity<>(users, httpHeaders), String.class);
     }
 
-    public ResponseEntity<?> postAssignementsToApi(HttpServletRequest request, List<Assignement> assignements) {
+    public ResponseEntity<String> postAssignementsToApi(HttpServletRequest request, List<Assignement> assignements) {
         log.info("Create assignements");
         final String apiUri = pearlApiUrl.concat("/api/survey-units/interviewers");
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
@@ -78,7 +78,7 @@ public class PearlApiService {
                 String.class);
     }
 
-    public HttpHeaders createSimpleHeadersAuth(HttpServletRequest request) {
+    private HttpHeaders createSimpleHeadersAuth(HttpServletRequest request) {
         String authTokenHeader = request.getHeader("Authorization");
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(List.of(MediaType.APPLICATION_JSON));
