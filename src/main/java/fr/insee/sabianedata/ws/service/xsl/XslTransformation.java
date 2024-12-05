@@ -23,6 +23,7 @@ public class XslTransformation {
 
     public void transformFods2XML(InputStream inputFile, OutputStream outputFile, InputStream xslSheet) throws Exception {
         TransformerFactory tFactory = TransformerFactory.newInstance();
+        System.out.println("TransformerFactory: " + tFactory.getClass().getName());
         Transformer transformer = tFactory.newTransformer(new StreamSource(xslSheet));
         xslTransform(transformer, inputFile, outputFile);
     }
