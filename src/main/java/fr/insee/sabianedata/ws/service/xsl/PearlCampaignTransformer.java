@@ -35,7 +35,7 @@ public class PearlCampaignTransformer {
 
     public File extract(File input, ExtractionType type) throws Exception {
         File outputFile = new File(input.getParent(), type + ".xml");
-        logger.debug("Output folder : {}", outputFile.getAbsolutePath());
+        logger.warn("Output folder : {}", outputFile.getAbsolutePath());
 
         try (InputStream inputStream = FileUtils.openInputStream(input);
              OutputStream outputStream = FileUtils.openOutputStream(outputFile);

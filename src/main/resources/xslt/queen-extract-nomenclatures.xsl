@@ -8,7 +8,7 @@
     office:mimetype="application/vnd.oasis.opendocument.spreadsheet"
     exclude-result-prefixes="tools xs office text table " version="2.0">
 
-    <xsl:import href="/xslt/utils.xsl"/>
+    <xsl:import href="./utils.xsl"/>
     <xsl:output indent="yes"/>
             
     <xsl:template match="/">
