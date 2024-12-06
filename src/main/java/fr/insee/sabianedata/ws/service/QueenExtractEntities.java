@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
@@ -31,37 +30,37 @@ public class QueenExtractEntities {
 
     public List<QueenSurveyUnit> getQueenSurveyUnitsFromFods(File fods, String folder) throws Exception {
         File file = queenTransformService.getQueenSurveyUnits(fods);
-        SurveyUnits surveyUnits = xmlMapper.readValue(file, SurveyUnits.class);
+        SurveyUnitsList surveyUnits = xmlMapper.readValue(file, SurveyUnitsList.class);
         return surveyUnits.getSurveyUnits().stream().map(s -> {
             QueenSurveyUnit suDto = new QueenSurveyUnit(s);
             suDto.extractJsonFromFiles(folder);
             return suDto;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     private List<QuestionnaireModel> getQueenQuestionnaireModelsFromFods(File fods) throws Exception {
         File file = queenTransformService.getQueenQuestionnaires(fods);
-        QuestionnaireModels questionnaireModels = xmlMapper.readValue(file, QuestionnaireModels.class);
+        QuestionnaireModelsList questionnaireModels = xmlMapper.readValue(file, QuestionnaireModelsList.class);
         return questionnaireModels != null && questionnaireModels.getQuestionnaireModels() != null ?
                 questionnaireModels.getQuestionnaireModels() : List.of();
     }
 
     public List<QuestionnaireModelDto> getQueenQuestionnaireModelsDtoFromFods(File fods, String folder) throws Exception {
         List<QuestionnaireModel> questionnaireModels = getQueenQuestionnaireModelsFromFods(fods);
-        return questionnaireModels.stream().map(q -> new QuestionnaireModelDto(q, folder)).collect(Collectors.toList());
+        return questionnaireModels.stream().map(q -> new QuestionnaireModelDto(q, folder)).toList();
     }
 
     public List<Nomenclature> getQueenNomenclatureFromFods(File fods) throws Exception {
         ArrayList<Nomenclature> lists = new ArrayList<>();
         File file = queenTransformService.getQueenNomenclatures(fods);
-        Nomenclatures nomenclatures = xmlMapper.readValue(file, Nomenclatures.class);
+        NomenclaturesList nomenclatures = xmlMapper.readValue(file, NomenclaturesList.class);
         return nomenclatures != null && nomenclatures.getNomenclatures() != null ? nomenclatures.getNomenclatures() :
                 lists;
     }
 
     public List<NomenclatureDto> getQueenNomenclaturesDtoFromFods(File fods, String folder) throws Exception {
         List<Nomenclature> nomenclatures = getQueenNomenclatureFromFods(fods);
-        return nomenclatures.stream().map(n -> new NomenclatureDto(n, folder)).collect(Collectors.toList());
+        return nomenclatures.stream().map(n -> new NomenclatureDto(n, folder)).toList();
     }
 
 }

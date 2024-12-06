@@ -2,6 +2,8 @@ package fr.insee.sabianedata.ws.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.servlet.http.HttpServletRequest;
 
-import fr.insee.sabianedata.ws.model.massiveAttack.*;
+import fr.insee.sabianedata.ws.model.massive_attack.*;
 import fr.insee.sabianedata.ws.model.pearl.*;
 import fr.insee.sabianedata.ws.model.queen.*;
 import lombok.RequiredArgsConstructor;
@@ -85,9 +87,19 @@ public class MassiveAttackService {
             throw new IllegalStateException("No scenarii found in the temporary folder.");
         }
 
-        Arrays.stream(scenarioFolders)
-                .map(file -> trainingScenarioService.getTrainingScenario(tempScenariiFolder, file.getName()))
-                .forEach(scenario -> scenarii.put(scenario.getLabel(), scenario));
+        List<TrainingScenario> scenarios = Arrays.stream(scenarioFolders)
+                .map(file -> {
+                    try {
+                        return trainingScenarioService.getTrainingScenario(tempScenariiFolder, file.getName());
+                    } catch (Exception e) {
+                        log.error("Couldn't load scenario {}", file.getName());
+                        return null;
+                    }
+                }).toList();
+        if (scenarios.contains(null)) {
+            throw new IllegalStateException("Couldn't load all scenarios");
+        }
+        scenarios.forEach(scenario -> scenarii.put(scenario.getLabel(), scenario));
     }
 
 
@@ -103,7 +115,8 @@ public class MassiveAttackService {
     }
 
     public ResponseEntity<String> deleteCampaign(HttpServletRequest request, String id) {
-        return externalApiService.deleteCampaign(request, id);
+        String encodedId = URLEncoder.encode(id, StandardCharsets.UTF_8);
+        return externalApiService.deleteCampaign(request, encodedId);
     }
 
     private TrainingCourse prepareTrainingCourse(String campaignId, String scenario, String campaignLabel,
@@ -142,7 +155,7 @@ public class MassiveAttackService {
         // 3c : wrap pearl and queen campaign together for easier id handling
         MassiveCampaign campaign = new MassiveCampaign(pearlCampaign, queenCampaign);
 
-        // 4 : update campaigns Label and make campaignId uniq => {campaign.id}_{I/M}_{OU}_{date}_{scenarLabel}
+        // 4 : update campaigns Label and make campaignId uniq -> campaign.id_I/M_OU_date_scenarLabel
         String newCampaignId = String.join("_", pearlCampaign.getCampaign(), type.toString().substring(0, 1),
                 organisationUnitId, referenceDate.toString(), scenarLabel);
         campaign.updateCamapignsId(newCampaignId);
@@ -371,7 +384,13 @@ public class MassiveAttackService {
 
         // TODO: use persistance layer here when available
 
-        ScenarioType type = trainingScenarioService.getScenarioType(tempScenariiFolder, scenarioId);
+        ScenarioType type = null;
+        try {
+            type = trainingScenarioService.getScenarioType(tempScenariiFolder, scenarioId);
+        } catch (IOException e) {
+            log.warn("Couldn't get scenario type",e);
+            throw new RuntimeException(e);
+        }
         if (type == ScenarioType.INTERVIEWER && !externalApiService.checkInterviewers(interviewers, request)) {
             return new ResponseModel(false, "Error when checking interviewers");
         }
@@ -381,17 +400,19 @@ public class MassiveAttackService {
 
         // TODO use persistance layer here when available
 
-        TrainingScenario scenar = trainingScenarioService.getTrainingScenario(tempScenariiFolder, scenarioId);
-
-        if (scenar == null) {
+        TrainingScenario scenar = null;
+        try {
+            scenar = trainingScenarioService.getTrainingScenario(tempScenariiFolder, scenarioId);
+        } catch (Exception e) {
             return new ResponseModel(false, "Error when loading campaigns");
         }
 
+        ScenarioType scenarioType = scenar.getType();
         List<TrainingCourse> trainingCourses = scenar.getCampaigns().stream().map(camp -> {
             try {
                 return prepareTrainingCourse(camp.getCampaign(), scenarioId, camp.getCampaignLabel(),
                         organisationUnitId,
-                        referenceDate, interviewers, scenar.getType(),
+                        referenceDate, interviewers, scenarioType,
                         campaignLabel);
 
             } catch (Exception e1) {

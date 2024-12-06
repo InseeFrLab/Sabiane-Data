@@ -1,5 +1,7 @@
 package fr.insee.sabianedata.ws.controller;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.insee.sabianedata.ws.model.ResponseModel;
-import fr.insee.sabianedata.ws.model.massiveAttack.OrganisationUnitDto;
-import fr.insee.sabianedata.ws.model.massiveAttack.TrainingScenario;
+import fr.insee.sabianedata.ws.model.massive_attack.OrganisationUnitDto;
+import fr.insee.sabianedata.ws.model.massive_attack.TrainingScenario;
 import fr.insee.sabianedata.ws.model.pearl.Campaign;
 import fr.insee.sabianedata.ws.service.MassiveAttackService;
 import fr.insee.sabianedata.ws.service.PearlApiService;
@@ -56,9 +58,10 @@ public class MassiveAttackController {
     public ResponseEntity<ResponseModel> generateTrainingCourse(HttpServletRequest request, @RequestParam(value =
             "campaignId") String campaignId, @RequestParam(value = "campaignLabel") String campaignLabel,
                                                                 @RequestParam(value = "organisationUnitId") String organisationUnitId, @RequestParam(value = "dateReference") Long dateReference, @RequestParam(value = "interviewers", defaultValue = "") List<String> interviewers) {
-        log.info("USER : {} | create scenario {}  -> {}", utilsService.getRequesterId(request), campaignId,
+        String encodedCampaignId = URLEncoder.encode(campaignId, StandardCharsets.UTF_8);
+        log.info("USER : {} | create scenario {}  -> {}", utilsService.getRequesterId(request), encodedCampaignId,
                 campaignLabel);
-        ResponseModel result = massiveAttackService.generateTrainingScenario(campaignId, campaignLabel,
+        ResponseModel result = massiveAttackService.generateTrainingScenario(encodedCampaignId, campaignLabel,
                 organisationUnitId, request, dateReference, interviewers);
         return result.isSuccess() ? ResponseEntity.ok().body(result) : ResponseEntity.badRequest().body(result);
     }

@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Nomenclatures {
+public class NomenclaturesList {
 
     @JacksonXmlProperty(localName = "Nomenclature")
     @JacksonXmlElementWrapper(useWrapping = false)

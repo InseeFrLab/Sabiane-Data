@@ -59,7 +59,7 @@ public class SpringKeycloakConfiguration extends KeycloakWebSecurityConfigurerAd
 
 
     @Bean
-    public KeycloakConfigResolver KeycloakConfigResolver() {
+    public KeycloakConfigResolver keycloakConfigResolver() {
         return new KeycloakSpringBootConfigResolver();
     }
 
@@ -88,16 +88,16 @@ public class SpringKeycloakConfiguration extends KeycloakWebSecurityConfigurerAd
     }
 
     @Bean
-    public KeycloakConfigResolver keycloakConfigResolver(KeycloakSpringBootProperties properties) {
-        return new myKeycloakConfigSpringBootResolverConfiguration(properties);
+    public KeycloakConfigResolver keycloakConfigResolverWithProperties(KeycloakSpringBootProperties properties) {
+        return new MyKeycloakConfigSpringBootResolverConfiguration(properties);
     }
 
 
     @KeycloakConfiguration
-    public static class myKeycloakConfigSpringBootResolverConfiguration extends KeycloakSpringBootConfigResolver {
+    public static class MyKeycloakConfigSpringBootResolverConfiguration extends KeycloakSpringBootConfigResolver {
         private final KeycloakDeployment keycloakDeployment;
 
-        public myKeycloakConfigSpringBootResolverConfiguration(KeycloakSpringBootProperties properties) {
+        public MyKeycloakConfigSpringBootResolverConfiguration(KeycloakSpringBootProperties properties) {
             keycloakDeployment = KeycloakDeploymentBuilder.build(properties);
         }
 

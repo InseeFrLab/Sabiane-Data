@@ -30,8 +30,8 @@ public class HealthCheckController {
     private final PearlApiService pearlApiService;
     private final QueenApiService queenApiService;
 
-    private final static String OK = "OK";
-    private final static String KO = "KO";
+    private static final String OK = "OK";
+    private static final String KO = "KO";
 
     @Operation(summary = "Healthcheck, check if api are alive", description = "Healthcheck on Pearl and Queen API")
     @GetMapping(path = "/healthcheck")

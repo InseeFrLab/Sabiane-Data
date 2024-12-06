@@ -1,4 +1,4 @@
-package fr.insee.sabianedata.ws.model.massiveAttack;
+package fr.insee.sabianedata.ws.model.massive_attack;
 
 import fr.insee.sabianedata.ws.model.pearl.PearlSurveyUnit;
 import fr.insee.sabianedata.ws.model.queen.QueenSurveyUnit;

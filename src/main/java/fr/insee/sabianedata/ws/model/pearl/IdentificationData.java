@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @JacksonXmlRootElement(localName = "SurveyUnitIdentification")
 @NoArgsConstructor
 @Getter
-public class Identification {
+public class IdentificationData {
 
     @JacksonXmlProperty(localName = "Identification")
     @JsonProperty(value = "identification")

@@ -17,7 +17,7 @@ To override environments variables you can do :
 
 ### With Maven - Requirements
 For building and running the application you need:
-- [JDK 17](https://jdk.java.net/archive/)
+- [JDK 17](https://adoptium.net/fr/temurin/releases/?version=17)
 - Maven 3  
 
 ### With Maven - Install and execute unit tests
@@ -54,7 +54,7 @@ Before starting up the tomcat server, some configurations are needed :
 
 #### External Properties file
 Create sabdatab.properties near war file and complete the following properties:  
-```shell  
+```properties  
 #Profile configuration
 
 # Security : "keycloak" for keycloak impl, anything else => no auth

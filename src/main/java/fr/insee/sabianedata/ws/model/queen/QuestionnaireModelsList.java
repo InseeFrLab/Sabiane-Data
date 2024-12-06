@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class QuestionnaireModels {
+public class QuestionnaireModelsList {
 
     @JacksonXmlProperty(localName = "QuestionnaireModel")
     @JacksonXmlElementWrapper(useWrapping = false)

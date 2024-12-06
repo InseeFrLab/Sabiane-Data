@@ -21,8 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import fr.insee.sabianedata.ws.model.massiveAttack.OrganisationUnitDto;
-import fr.insee.sabianedata.ws.model.massiveAttack.PearlUser;
+import fr.insee.sabianedata.ws.model.massive_attack.OrganisationUnitDto;
+import fr.insee.sabianedata.ws.model.massive_attack.PearlUser;
 
 @Service
 @Slf4j
@@ -60,9 +60,9 @@ public class PearlApiService {
                 String.class);
     }
 
-    public ResponseEntity<String> postUsersToApi(HttpServletRequest request, List<UserDto> users, String OuId) {
+    public ResponseEntity<String> postUsersToApi(HttpServletRequest request, List<UserDto> users, String ouId) {
         log.info("Try to create users with id {}", users.stream().map(UserDto::getId).toList());
-        final String apiUri = String.join("/", pearlApiUrl, "api/organization-unit", OuId, "users");
+        final String apiUri = String.join("/", pearlApiUrl, "api/organization-unit", ouId, "users");
         HttpHeaders httpHeaders = createSimpleHeadersAuth(request);
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 

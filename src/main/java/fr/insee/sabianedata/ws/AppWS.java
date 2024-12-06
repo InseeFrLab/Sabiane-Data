@@ -3,8 +3,7 @@ package fr.insee.sabianedata.ws;
 import java.util.Arrays;
 import java.util.stream.StreamSupport;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -17,12 +16,11 @@ import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MutablePropertySources;
 
-@SpringBootApplication(scanBasePackages = "fr.insee.sabianedata.ws")
+@SpringBootApplication
+@Slf4j
 public class AppWS extends SpringBootServletInitializer {
 
     public static final String APP_NAME = "sabdatab";
-
-    private static final Logger log = LoggerFactory.getLogger(AppWS.class);
 
     public static void main(String[] args) {
         System.setProperty("spring.config.name", APP_NAME);

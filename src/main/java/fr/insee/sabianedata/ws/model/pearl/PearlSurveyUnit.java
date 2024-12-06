@@ -51,7 +51,7 @@ public class PearlSurveyUnit {
     private List<SurveyUnitStateDto> states = new ArrayList<>();
     @JacksonXmlProperty(localName = "SurveyUnitIdentification")
     @JsonProperty(value = "identification")
-    private Identification identification;
+    private IdentificationData identification;
     private String interviewerId;
 
 
@@ -66,6 +66,7 @@ public class PearlSurveyUnit {
         this.displayName = su.getDisplayName();
         this.persons = su.getPersons();
         this.address = su.getAddress();
+        this.interviewerId= su.getInterviewerId();
         this.organizationUnitId = su.getOrganizationUnitId();
         this.priority = su.isPriority();
         this.campaign = su.getCampaign();

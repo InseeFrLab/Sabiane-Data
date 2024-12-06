@@ -38,9 +38,9 @@ public class Visibility {
     private Long interviewerStartDate;
     private Long managementStartDate;
     private Long endDate;
-    private final String mail = "no-mail-yet";
-    private final String tel = "no-tel-yet";
-    private final boolean useLetterCommunication = false;
+    private String mail = "no-mail-yet";
+    private String tel = "no-tel-yet";
+    private boolean useLetterCommunication = false;
 
     public Visibility(Visibility visibility) throws IllegalArgumentException {
         this.organizationalUnit = visibility.getOrganizationalUnit();
@@ -57,6 +57,9 @@ public class Visibility {
         this.interviewerStartDateString = visibility.getInterviewerStartDateString();
         this.managementStartDateString = visibility.getManagementStartDateString();
         this.endDateString = visibility.getEndDateString();
+        this.mail = visibility.getMail();
+        this.tel= visibility.getTel();
+        this.useLetterCommunication= visibility.isUseLetterCommunication();
     }
 
     /**
@@ -64,7 +67,7 @@ public class Visibility {
      *
      * @param referenceDate the reference date
      */
-    public void updateDatesWithReferenceDate(Long referenceDate){
+    public void updateDatesWithReferenceDate(Long referenceDate) {
         this.collectionStartDate = DateParser.relativeDateParse(collectionStartDateString,
                 referenceDate);
         this.collectionEndDate = DateParser.relativeDateParse(collectionEndDateString, referenceDate);

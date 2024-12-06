@@ -17,8 +17,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.stereotype.Service;
 
-import fr.insee.sabianedata.ws.model.massiveAttack.ScenarioType;
-import fr.insee.sabianedata.ws.model.massiveAttack.TrainingScenario;
+import fr.insee.sabianedata.ws.model.massive_attack.ScenarioType;
+import fr.insee.sabianedata.ws.model.massive_attack.TrainingScenario;
 
 @Service
 @Slf4j
@@ -27,7 +27,7 @@ public class TrainingScenarioService {
 
     private final PearlExtractEntities pearlExtractEntities;
 
-    public TrainingScenario getTrainingScenario(File scenariiFolder, String tsId) {
+    public TrainingScenario getTrainingScenario(File scenariiFolder, String tsId) throws Exception {
 
         Path scenarioDirectory = scenariiFolder.toPath().resolve(tsId);
         Path infoFilePath = scenarioDirectory.resolve("info.json");
@@ -38,7 +38,7 @@ public class TrainingScenarioService {
             trainingScenario = objectMapper.readValue(inputStream, TrainingScenario.class);
         } catch (IOException e) {
             log.warn("Unable to load TrainingScenario from {}", infoFilePath, e);
-            return null;
+            throw new Exception("Unable to load TrainingScenario");
         }
 
         try (Stream<Path> paths = Files.list(scenarioDirectory)) {
@@ -53,7 +53,7 @@ public class TrainingScenarioService {
             throw new RuntimeException("Failed to process campaigns", e);
         } catch (RuntimeException e) {
             log.warn("Error when processing campaigns for scenario {}", tsId, e);
-            return null;
+            throw new Exception("Error when processing scenario");
         }
 
         return trainingScenario;
@@ -71,29 +71,35 @@ public class TrainingScenarioService {
         }
     }
 
-    public ScenarioType getScenarioType(File scenariiFolder, String tsId) {
+    public ScenarioType getScenarioType(File scenariiFolder, String tsId) throws IOException {
         try {
             File scenarioDirectory = new File(scenariiFolder, tsId);
             File infoFile = new File(scenarioDirectory, "info.json");
             ObjectMapper objectMapper = new ObjectMapper();
             TrainingScenario ts = objectMapper.readValue(infoFile, TrainingScenario.class);
             return ts.getType();
-        } catch ( IOException e ) {
+        } catch (IOException e) {
             log.warn("Error when getting scenario type {}", tsId, e);
-            return null;
+            throw e;
         }
     }
 
     // TODO : create an in-memory persistence layer to persist all scenario at start-up
     //  move this currently unused function there,
     //  and call it instead of generating scenario from scratch for each call ;)
-    public List<TrainingScenario> getTrainingScenarii(File scenariiFolder) throws IOException {
+    public List<TrainingScenario> getTrainingScenarii(File scenariiFolder) throws Exception {
         File[] files = scenariiFolder.listFiles();
-        if(files == null){
-            throw new IOException(String.format("%s is not a folder",scenariiFolder));
+        if (files == null) {
+            throw new IOException(String.format("%s is not a folder", scenariiFolder));
         }
         Stream<File> folders = Arrays.stream(files);
-        return folders.map(f -> getTrainingScenario(scenariiFolder, f.getName())).toList();
+        return folders.map(f -> {
+            try {
+                return getTrainingScenario(scenariiFolder, f.getName());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
     }
 
 }

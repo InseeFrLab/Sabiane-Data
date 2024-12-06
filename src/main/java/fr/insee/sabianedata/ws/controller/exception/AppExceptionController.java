@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 public class AppExceptionController {
 
-	@ExceptionHandler(value = Exception.class)
-	public ResponseEntity<Object> exception(Exception exception) {
-		String exceptionMessage  =String.format("Unknown error during generation : "+exception.getMessage());
-		log.warn(exceptionMessage);
-		return new ResponseEntity<>(exceptionMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-	}
+    //TODO migrate to an exception bubbling pattern
+
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<Object> exception(Exception exception) {
+        String exceptionMessage = String.format("Unknown error happened : %s", exception.getMessage());
+        log.warn(exceptionMessage);
+        return new ResponseEntity<>(exceptionMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

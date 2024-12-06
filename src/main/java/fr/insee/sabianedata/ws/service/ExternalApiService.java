@@ -1,8 +1,8 @@
 package fr.insee.sabianedata.ws.service;
 
-import fr.insee.sabianedata.ws.model.massiveAttack.MassiveSurveyUnit;
-import fr.insee.sabianedata.ws.model.massiveAttack.OrganisationUnitDto;
-import fr.insee.sabianedata.ws.model.massiveAttack.TrainingCourse;
+import fr.insee.sabianedata.ws.model.massive_attack.MassiveSurveyUnit;
+import fr.insee.sabianedata.ws.model.massive_attack.OrganisationUnitDto;
+import fr.insee.sabianedata.ws.model.massive_attack.TrainingCourse;
 import fr.insee.sabianedata.ws.model.pearl.Campaign;
 import fr.insee.sabianedata.ws.model.pearl.InterviewerDto;
 import fr.insee.sabianedata.ws.model.pearl.PearlSurveyUnit;
@@ -53,9 +53,9 @@ public class ExternalApiService {
             log.error("Error during creation of surveyUnits");
             log.error(e.getMessage());
         }
-        log.info("Trying to post {} assignements", tc.getAssignements().size());
+        log.info("Trying to post {} assignements", tc.getAssignments().size());
         try {
-            pearlApiService.postAssignementsToApi(request, tc.getAssignements());
+            pearlApiService.postAssignementsToApi(request, tc.getAssignments());
             assignementSuccess = true;
         } catch (Exception e) {
             log.error("Error during creation of assignements");

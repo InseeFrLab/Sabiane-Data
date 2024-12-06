@@ -1,4 +1,4 @@
-package fr.insee.sabianedata.ws.model.massiveAttack;
+package fr.insee.sabianedata.ws.model.massive_attack;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

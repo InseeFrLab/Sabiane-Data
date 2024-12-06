@@ -1,4 +1,4 @@
-package fr.insee.sabianedata.ws.model.massiveAttack;
+package fr.insee.sabianedata.ws.model.massive_attack;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class TrainingCourse {
     private MassiveCampaign campaign;
     private List<QuestionnaireModelDto> questionnaireModels;
     private List<NomenclatureDto> nomenclatures;
-    private List<Assignement> assignements;
+    private List<Assignement> assignments;
 
 
 
