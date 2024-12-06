@@ -40,26 +40,26 @@ public class OpenApiConfiguration {
 	@Value("${keycloak.realm:}")
 	public String realmName;
 
-	public final String SCHEMEKEYCLOAK = "oAuthScheme";
+	public static final String SCHEMEKEYCLOAK = "oAuthScheme";
 
 	@Bean
 	@ConditionalOnProperty(name = "fr.insee.sabianedata.security", havingValue = "keycloak", matchIfMissing = true)
 	public OpenAPI customOpenAPIKeycloak() {
 		final OpenAPI openapi = createOpenAPI();
+		String commonUrl = String.join("/",keycloakUrl,"realms",realmName,"protocol/openid-connect");
 		openapi.components(new Components().addSecuritySchemes(SCHEMEKEYCLOAK, new SecurityScheme()
 				.type(SecurityScheme.Type.OAUTH2).in(SecurityScheme.In.HEADER).description("Authentification keycloak")
 				.flows(new OAuthFlows().authorizationCode(new OAuthFlow()
-						.authorizationUrl(keycloakUrl + "/realms/" + realmName + "/protocol/openid-connect/auth")
-						.tokenUrl(keycloakUrl + "/realms/" + realmName + "/protocol/openid-connect/token")
-						.refreshUrl(keycloakUrl + "/realms/" + realmName + "/protocol/openid-connect/token")))));
+						.authorizationUrl(String.join("/",commonUrl,"auth"))
+						.tokenUrl(String.join("/",commonUrl,"token"))
+						.refreshUrl(String.join("/",commonUrl,"token"))))));
 		return openapi;
 	}
 
 	@Bean
 	@ConditionalOnProperty(name = "fr.insee.sabianedata.security", havingValue = "none")
 	public OpenAPI customOpenAPI() {
-		final OpenAPI openapi = createOpenAPI();
-		return openapi;
+        return createOpenAPI();
 	}
 
 	@ConditionalOnProperty(name = "fr.insee.sabianedata.security", havingValue = "keycloak", matchIfMissing = true)

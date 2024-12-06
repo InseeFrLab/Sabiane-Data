@@ -9,12 +9,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @JacksonXmlRootElement(localName = "Assignement")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@Slf4j
 public class Assignement {
 
     @JacksonXmlProperty(localName = "SurveyUnitId")
@@ -28,7 +30,7 @@ public class Assignement {
         try {
             return objectMapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.warn("Couldn't stringify assignment",e);
         }
         return "";
     }
